@@ -52,7 +52,7 @@ class PCDSubPubNode(Node):
         self.net = PointNet()
 
         # load the model
-        self.net.load_state_dict(torch.load("epoch_290.pt"))
+        self.net.load_state_dict(torch.load("../weights/epoch_290.pt"))
         self.net.eval()
         self.net.cuda()
         self.net.zero_grad()
@@ -79,7 +79,7 @@ class PCDSubPubNode(Node):
             # downsample the cloud
             pcd = pcd.voxel_down_sample(voxel_size=0.05)
 
-            self.create_grids_of_the_cloud(pcd, trans)
+            self.infer(pcd, trans)
 
         except TransformException as ex:
             self.get_logger().info(
@@ -91,7 +91,7 @@ class PCDSubPubNode(Node):
         for ndx in range(0, l, n):
             yield iterable[ndx:min(ndx + n, l)]
 
-    def create_grids_of_the_cloud(self, pcd: o3d.geometry.PointCloud, trans: TransformStamped):
+    def infer(self, pcd: o3d.geometry.PointCloud, trans: TransformStamped):
 
         # Transfrom cloud to base_link frame
         T = np.eye(4)
@@ -109,13 +109,14 @@ class PCDSubPubNode(Node):
         # crop the cloud to the region of interest
         min_corner = [-5, -5, -2.5]
         max_corner = [5, 5, 2.5]
+        x_step_size = 1.5
+        y_step_size = 0.75
+
         pcd = pcd.crop(o3d.geometry.AxisAlignedBoundingBox(
             min_corner, max_corner))
 
         x_dist = abs(max_corner[0] - min_corner[0])
         y_dist = abs(max_corner[1] - min_corner[1])
-        x_step_size = 1.5
-        y_step_size = 0.75
 
         geometries = []
         data_list = []

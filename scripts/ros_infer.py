@@ -9,12 +9,14 @@ import numpy as np
 import rclpy
 import rclpy.qos
 from rclpy.node import Node
-from geometry_msgs.msg import Transform, TransformStamped
+from geometry_msgs.msg import Transform, TransformStamped, Pose, Vector3
 from std_msgs.msg import Header
 from sensor_msgs.msg import PointField, PointCloud2
 from sensor_msgs_py.point_cloud2 import read_points_numpy
 from std_msgs.msg import Header
 import sensor_msgs.msg as sensor_msgs
+from vision_msgs.msg import Detection3D, Detection3DArray, ObjectHypothesisWithPose
+
 
 from tf2_ros import TransformException
 from tf2_ros.buffer import Buffer
@@ -30,9 +32,12 @@ class PCDSubPubNode(Node):
         super().__init__('pcd_subsriber_node')
         # Set up a subscription to the 'pcd' topic with a callback to the
         # function `listener_callback`
+
+        self.topic_name = 'map_cloud'
+        self.topic_name = '/lio_sam/mapping/map_local'
         self.pcd_subscriber = self.create_subscription(
             sensor_msgs.PointCloud2,                            # Msg type
-            'map_cloud',                                        # topic
+            self.topic_name,                                        # topic
             self.listener_callback,                             # Function to call
             qos_profile=rclpy.qos.qos_profile_sensor_data       # QoS
         )
@@ -40,6 +45,11 @@ class PCDSubPubNode(Node):
         self.obstacle_pcd_publisher = self.create_publisher(
             sensor_msgs.PointCloud2,
             'traversable_map_cloud',
+            qos_profile=rclpy.qos.qos_profile_sensor_data)
+
+        self.box_publisher = self.create_publisher(
+            Detection3DArray,
+            'boxes',
             qos_profile=rclpy.qos.qos_profile_sensor_data)
 
         self.buffer = Buffer()
@@ -52,10 +62,11 @@ class PCDSubPubNode(Node):
         self.net = PointNet()
 
         # load the model
-        self.net.load_state_dict(torch.load("../weights/epoch_290.pt"))
+        self.net.load_state_dict(torch.load("weights/epoch_290.pt"))
         self.net.eval()
         self.net.cuda()
         self.net.zero_grad()
+        self.get_logger().info("Model loaded")
 
     def listener_callback(self, msg: sensor_msgs.PointCloud2):
 
@@ -77,7 +88,7 @@ class PCDSubPubNode(Node):
             pcd.points = o3d.utility.Vector3dVector(numpy_array_points)
 
             # downsample the cloud
-            pcd = pcd.voxel_down_sample(voxel_size=0.05)
+            # pcd = pcd.voxel_down_sample(voxel_size=0.05)
 
             self.infer(pcd, trans)
 
@@ -91,8 +102,44 @@ class PCDSubPubNode(Node):
         for ndx in range(0, l, n):
             yield iterable[ndx:min(ndx + n, l)]
 
+    def populate_and_publish_boxes(self,  boxes, header):
+        # populate the boxes
+        detection_array = Detection3DArray()
+        hyp = ObjectHypothesisWithPose()
+        detection_array.header = header
+        detection_array.detections = []
+
+        for box in boxes:
+
+            min_bound = box.get_min_bound()
+            max_bound = box.get_max_bound()
+
+            center = Pose()
+            center.position.x = box.get_center()[0]
+            center.position.y = box.get_center()[1]
+            center.position.z = box.get_center()[2]
+            center.orientation.w = 1.0
+
+            size = Vector3()
+            size.x = max_bound[0] - min_bound[0]
+            size.y = max_bound[1] - min_bound[1]
+            size.z = max_bound[2] - min_bound[2]
+
+            detection = Detection3D()
+            detection.header = header
+            detection.bbox.size = size
+            detection.bbox.center = center
+            detection.results = [hyp]
+            detection_array.detections.append(detection)
+
+        self.box_publisher.publish(detection_array)
+
     def infer(self, pcd: o3d.geometry.PointCloud, trans: TransformStamped):
 
+        # print the number of points in the cloud
+
+        # calculate the time taken to transform the cloud
+        start = time.time()
         # Transfrom cloud to base_link frame
         T = np.eye(4)
 
@@ -103,22 +150,22 @@ class PCDSubPubNode(Node):
         T[2, 3] = trans.transform.translation.z
         pcd_transformed = pcd.transform(T)
 
-        # calculate the time taken to transform the cloud
-        start = time.time()
-
         # crop the cloud to the region of interest
-        min_corner = [-5, -5, -2.5]
-        max_corner = [5, 5, 2.5]
-        x_step_size = 1.5
-        y_step_size = 0.75
+        min_corner = [-10, -10, -3.5]
+        max_corner = [10, 10, 3.5]
+        x_step_size = 1
+        y_step_size = 0.5
 
         pcd = pcd.crop(o3d.geometry.AxisAlignedBoundingBox(
             min_corner, max_corner))
+
+        print("Number of points in the cloud", len(pcd.points))
 
         x_dist = abs(max_corner[0] - min_corner[0])
         y_dist = abs(max_corner[1] - min_corner[1])
 
         geometries = []
+        boxes = []
         data_list = []
         non_normalized_points = []
 
@@ -129,18 +176,20 @@ class PCDSubPubNode(Node):
                 current_min_corner = [
                     min_corner[0] + x_step_size * x,
                     min_corner[1] + y_step_size * y,
-                    -2.5,
+                    -3.5,
                 ]
 
                 current_max_corner = [
                     current_min_corner[0] + x_step_size,
                     current_min_corner[1] + y_step_size,
-                    2.5,
+                    3.5,
                 ]
 
                 this_box = o3d.geometry.AxisAlignedBoundingBox(
                     current_min_corner, current_max_corner
                 )
+
+                boxes.append(this_box)
 
                 cropped_pcd = pcd.crop(this_box)
 
@@ -175,8 +224,11 @@ class PCDSubPubNode(Node):
                     data_list.append(points)
                     geometries.append(cropped_pcd)
 
-        print("partitioning done in . . . seconds", time.time() - start)
-        start = time.time()
+        header = Header()
+        header.frame_id = "base_link"
+        header.stamp = self.get_clock().now().to_msg()
+
+        self.populate_and_publish_boxes(boxes, header)
 
         batch_size = 128
         crop_index = 0
@@ -197,9 +249,7 @@ class PCDSubPubNode(Node):
             batches = torch.cat(batches, dim=0).cuda()
             points = torch.cat(x, dim=0).cuda()
 
-            tic = time.time()
             predictions = self.net(points, batches).cpu().detach().numpy()
-            print("net prediction time", time.time() - tic)
 
             # Bottlenek, too slow
             for p in predictions:
@@ -219,6 +269,10 @@ class PCDSubPubNode(Node):
 
                 crop_index = crop_index + 1
 
+        if len(non_normalized_points) == 0:
+            self.get_logger().info("No points in the cloud")
+            return
+
         final_cloud_points = torch.cat(
             non_normalized_points, dim=0).cpu().detach().numpy()
 
@@ -226,9 +280,6 @@ class PCDSubPubNode(Node):
             np.asarray(final_cloud_points, dtype=np.float32))
         final_cloud.colors = o3d.utility.Vector3dVector(
             np.asarray(final_cloud_colors, dtype=np.float32))
-
-        print("prediction done in . . . seconds", time.time() - start)
-        start = time.time()
 
         final_points = np.asarray(final_cloud.points, dtype=np.float32)
         final_colors = np.asarray(final_cloud.colors, dtype=np.float32)
@@ -249,10 +300,6 @@ class PCDSubPubNode(Node):
             name=n, offset=i*itemsize, datatype=ros_dtype, count=1)
             for i, n in enumerate('xyzrgba')]
 
-        header = Header()
-        header.frame_id = "base_link"
-        header.stamp = self.get_clock().now().to_msg()
-
         final_ros_cloud = sensor_msgs.PointCloud2(
             header=header,
             height=1,
@@ -265,7 +312,7 @@ class PCDSubPubNode(Node):
             data=data
         )
 
-        print("publishing done in . . . seconds", time.time() - start)
+        print("Inferred in seconds", time.time() - start)
 
         # according to this prediction we can color the cloud
 

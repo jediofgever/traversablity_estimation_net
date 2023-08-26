@@ -12,11 +12,11 @@ from rclpy.node import Node
 from geometry_msgs.msg import Transform, TransformStamped, Pose, Vector3
 from std_msgs.msg import Header
 from sensor_msgs.msg import PointField, PointCloud2
-from sensor_msgs_py.point_cloud2 import read_points_numpy
+from sensor_msgs_py.point_cloud2 import read_points_numpy, create_cloud
 from std_msgs.msg import Header
 import sensor_msgs.msg as sensor_msgs
-from vision_msgs.msg import Detection3D, Detection3DArray, ObjectHypothesisWithPose
-
+from vision_msgs.msg import Detection3D, Detection3DArray
+from vision_msgs.msg import ObjectHypothesisWithPose
 
 from tf2_ros import TransformException
 from tf2_ros.buffer import Buffer
@@ -27,70 +27,94 @@ from pointnet import PointNet
 
 
 class PCDSubPubNode(Node):
+    """ Node for subscribing to a point cloud and publishing the traversability map
+        Uses a pretrained PointNet model to infer the traversability of the local map
+        Publishes the traversability map as a point cloud and crop boxes as a Detection3DArray 
+
+    Args:
+        Node (rclpy): This is a ROS 2 node
+    """
 
     def __init__(self):
         super().__init__('pcd_subsriber_node')
-        # Set up a subscription to the 'pcd' topic with a callback to the
-        # function `listener_callback`
 
-        self.topic_name = 'map_cloud'
-        self.topic_name = '/lio_sam/mapping/map_local'
+        self.local_map_topic_name = '/lio_sam/mapping/map_local'
+        self.traversablity_detection_topic_name = '/pointnet/traversability/map_local'
+        self.traversablity_crop_boxes_topic_name = '/pointnet/traversability/crop_boxes'
+        self.get_logger().info('Subscribing to ' + self.local_map_topic_name)
+        self.get_logger().info('Publishing to ' +
+                               self.traversablity_detection_topic_name)
+        self.get_logger().info('Publishing to ' +
+                               self.traversablity_crop_boxes_topic_name)
+
+        self.model_path = 'weights/epoch_200.pt'
+        self.batch_size = 128
+        self.use_sim_time = True
+
+        # config for the crop boxes and traversability map
+        # crop the cloud to the region of interest
+        self.min_corner = [-10, -10, -4.5]
+        self.max_corner = [10, 10, 1.5]
+        self.x_step_size = 1.5
+        self.y_step_size = 0.75
+        self.min_points = 3
+
         self.pcd_subscriber = self.create_subscription(
             sensor_msgs.PointCloud2,                            # Msg type
-            self.topic_name,                                        # topic
+            self.local_map_topic_name,                          # topic
             self.listener_callback,                             # Function to call
             qos_profile=rclpy.qos.qos_profile_sensor_data       # QoS
         )
 
         self.obstacle_pcd_publisher = self.create_publisher(
             sensor_msgs.PointCloud2,
-            'traversable_map_cloud',
+            self.traversablity_detection_topic_name,
             qos_profile=rclpy.qos.qos_profile_sensor_data)
 
         self.box_publisher = self.create_publisher(
             Detection3DArray,
-            'boxes',
+            self.traversablity_crop_boxes_topic_name,
             qos_profile=rclpy.qos.qos_profile_sensor_data)
 
         self.buffer = Buffer()
         self.listener = TransformListener(self.buffer, self)
 
         # set use_sim_time to true to use the simulation clock
-        self.use_sim_time = True
         self.set_parameters([rclpy.parameter.Parameter(
             'use_sim_time', rclpy.Parameter.Type.BOOL, self.use_sim_time)])
         self.net = PointNet()
 
         # load the model
-        self.net.load_state_dict(torch.load("weights/epoch_290.pt"))
+        self.net.load_state_dict(torch.load(self.model_path))
         self.net.eval()
         self.net.cuda()
         self.net.zero_grad()
-        self.get_logger().info("Model loaded")
+        self.get_logger().info('Model loaded')
 
     def listener_callback(self, msg: sensor_msgs.PointCloud2):
+        """ Callback function for the subscriber
+            Transforms the point cloud to the base_link frame and then calls the infer function
+            publishes the traversability map and crop boxes
+        """
 
         try:
-
-            numpy_array_points = read_points_numpy(
-                msg, field_names=("x", "y", "z"))
-
+            # The local cloud is in "map" frame
+            # We need to transform it to "base_link" frame
             from_frame_rel = 'map'
             to_frame_rel = 'base_link'
-
             trans = self.buffer.lookup_transform(
                 to_frame_rel,
                 from_frame_rel,
                 rclpy.time.Time())
 
             # Now create a open3d point cloud
+            numpy_array_points = read_points_numpy(
+                msg, field_names=('x', 'y', 'z'))
+
             pcd = o3d.geometry.PointCloud()
             pcd.points = o3d.utility.Vector3dVector(numpy_array_points)
 
-            # downsample the cloud
-            # pcd = pcd.voxel_down_sample(voxel_size=0.05)
-
-            self.infer(pcd, trans)
+            self.infer(pcd, trans, msg.header)
 
         except TransformException as ex:
             self.get_logger().info(
@@ -98,12 +122,27 @@ class PCDSubPubNode(Node):
             return
 
     def batch(self, iterable, n=1):
+        """creates batches of size n from an iterable, typically a list
+        e.g. if input is [1,2,3,4,5,6,7,8,9] and n=3, output is [[1,2,3],[4,5,6],[7,8,9]]
+        e.g. if input is [1,2,3,4,5,6,7,8,9] and n=4, output is [[1,2,3,4],[5,6,7,8],[9]]
+
+        Args:
+            iterable (list): a list 
+            n (int, optional): the length batch. Defaults to 1.
+
+        Yields:
+            batched list: with each elemnts havce size n or less
+        """
         l = len(iterable)
         for ndx in range(0, l, n):
             yield iterable[ndx:min(ndx + n, l)]
 
     def populate_and_publish_boxes(self,  boxes, header):
-        # populate the boxes
+        """Populates the Detection3DArray message and publishes it
+           The point cloud is cropped to an inflated robot footprint and fed 
+           to the PointNet model. The output of the model is a regressed values between 0 and 1
+           For debugging purposes, the crop boxes publish as a Detection3DArray message
+        """
         detection_array = Detection3DArray()
         hyp = ObjectHypothesisWithPose()
         detection_array.header = header
@@ -134,15 +173,15 @@ class PCDSubPubNode(Node):
 
         self.box_publisher.publish(detection_array)
 
-    def infer(self, pcd: o3d.geometry.PointCloud, trans: TransformStamped):
-
-        # print the number of points in the cloud
+    def infer(self,
+              pcd: o3d.geometry.PointCloud,
+              trans: TransformStamped,
+              header: Header):
 
         # calculate the time taken to transform the cloud
         start = time.time()
         # Transfrom cloud to base_link frame
         T = np.eye(4)
-
         T[:3, :3] = pcd.get_rotation_matrix_from_quaternion((trans.transform.rotation.w, trans.transform.rotation.x,
                                                              trans.transform.rotation.y, trans.transform.rotation.z))
         T[0, 3] = trans.transform.translation.x
@@ -150,39 +189,29 @@ class PCDSubPubNode(Node):
         T[2, 3] = trans.transform.translation.z
         pcd_transformed = pcd.transform(T)
 
-        # crop the cloud to the region of interest
-        min_corner = [-10, -10, -3.5]
-        max_corner = [10, 10, 3.5]
-        x_step_size = 1
-        y_step_size = 0.5
-
         pcd = pcd.crop(o3d.geometry.AxisAlignedBoundingBox(
-            min_corner, max_corner))
+            self.min_corner, self.max_corner))
 
-        print("Number of points in the cloud", len(pcd.points))
-
-        x_dist = abs(max_corner[0] - min_corner[0])
-        y_dist = abs(max_corner[1] - min_corner[1])
+        x_dist = abs(self.max_corner[0] - self.min_corner[0])
+        y_dist = abs(self.max_corner[1] - self.min_corner[1])
 
         geometries = []
         boxes = []
         data_list = []
         non_normalized_points = []
 
-        for x in range(0, int(x_dist / x_step_size+1)):
+        for x in range(0, int(x_dist / self.x_step_size+1)):
 
-            for y in range(0, int(y_dist / y_step_size+1)):
+            for y in range(0, int(y_dist / self.y_step_size+1)):
 
                 current_min_corner = [
-                    min_corner[0] + x_step_size * x,
-                    min_corner[1] + y_step_size * y,
-                    -3.5,
+                    self.min_corner[0] + self.x_step_size * x,
+                    self.min_corner[1] + self.y_step_size * y, -4.5,
                 ]
 
                 current_max_corner = [
-                    current_min_corner[0] + x_step_size,
-                    current_min_corner[1] + y_step_size,
-                    3.5,
+                    current_min_corner[0] + self.x_step_size,
+                    current_min_corner[1] + self.y_step_size,  1.5,
                 ]
 
                 this_box = o3d.geometry.AxisAlignedBoundingBox(
@@ -193,7 +222,7 @@ class PCDSubPubNode(Node):
 
                 cropped_pcd = pcd.crop(this_box)
 
-                if len(cropped_pcd.points) < 10:
+                if len(cropped_pcd.points) < self.min_points:
                     continue
                 else:
 
@@ -224,21 +253,16 @@ class PCDSubPubNode(Node):
                     data_list.append(points)
                     geometries.append(cropped_pcd)
 
-        header = Header()
         header.frame_id = "base_link"
-        header.stamp = self.get_clock().now().to_msg()
 
         self.populate_and_publish_boxes(boxes, header)
 
-        batch_size = 128
         crop_index = 0
         final_cloud = o3d.geometry.PointCloud()
         final_cloud_points = []
         final_cloud_colors = []
 
-        for x in self.batch(data_list, batch_size):
-            # create a batch
-            # empty torch tensor of size (batch_size, 3, 1)
+        for x in self.batch(data_list, self.batch_size):
             batches = []
             batch_index = 0
             for sample in x:
@@ -251,14 +275,13 @@ class PCDSubPubNode(Node):
 
             predictions = self.net(points, batches).cpu().detach().numpy()
 
-            # Bottlenek, too slow
             for p in predictions:
                 p = np.clip(p, 0, 1)
                 if p[0] < 0.2:
                     geometries[crop_index].paint_uniform_color(
-                        [0, 1 - p[0], 0])
+                        [0, 1, 0])
                 else:
-                    geometries[crop_index].paint_uniform_color([p[0], 0, 0])
+                    geometries[crop_index].paint_uniform_color([1, 0, 0])
 
                 curr_points = np.asarray(
                     geometries[crop_index].points, dtype=np.float32)
@@ -275,47 +298,59 @@ class PCDSubPubNode(Node):
 
         final_cloud_points = torch.cat(
             non_normalized_points, dim=0).cpu().detach().numpy()
-
         final_cloud.points = o3d.utility.Vector3dVector(
             np.asarray(final_cloud_points, dtype=np.float32))
         final_cloud.colors = o3d.utility.Vector3dVector(
             np.asarray(final_cloud_colors, dtype=np.float32))
 
-        final_points = np.asarray(final_cloud.points, dtype=np.float32)
-        final_colors = np.asarray(final_cloud.colors, dtype=np.float32)
+        cloud_npy = np.asarray(copy.deepcopy(final_cloud.points))
 
-        # concat the points and colors to create N X 6 matrix
-        points_colors = np.concatenate((final_points, final_colors), axis=1)
+        n_points = len(cloud_npy[:, 0])
+        data = np.zeros(n_points, dtype=[
+            ('x', np.float32),
+            ('y', np.float32),
+            ('z', np.float32),
+            ('rgb', np.uint32)
+        ])
 
-        # add additional alpha channel to the colors to create N X 7 matrix
-        points_colors = np.concatenate((points_colors, np.ones(
-            (points_colors.shape[0], 1), dtype=np.float32)), axis=1)
+        BIT_MOVE_16 = 2**16
+        BIT_MOVE_8 = 2**8
 
-        ros_dtype = PointField.FLOAT32
-        dtype = np.float32
-        itemsize = np.dtype(dtype).itemsize
-        data = points_colors.astype(dtype).tobytes()
+        rgb_npy = np.asarray(copy.deepcopy(final_cloud.colors))
+        rgb_npy = np.floor(rgb_npy*255)  # nx3 matrix
+        rgb_npy = rgb_npy[:, 0] * BIT_MOVE_16 + \
+            rgb_npy[:, 1] * BIT_MOVE_8 + rgb_npy[:, 2]
+        rgb_npy = rgb_npy.astype(np.uint32)
 
-        fields = [sensor_msgs.PointField(
-            name=n, offset=i*itemsize, datatype=ros_dtype, count=1)
-            for i, n in enumerate('xyzrgba')]
+        data['x'] = cloud_npy[:, 0]
+        data['y'] = cloud_npy[:, 1]
+        data['z'] = cloud_npy[:, 2]
+        data['rgb'] = rgb_npy
 
-        final_ros_cloud = sensor_msgs.PointCloud2(
-            header=header,
-            height=1,
-            width=points_colors.shape[0],
-            is_dense=False,
-            is_bigendian=False,
-            fields=fields,
-            point_step=(itemsize * 7),
-            row_step=(itemsize * 7 * points_colors.shape[0]),
-            data=data
-        )
+        fields = []
+        fields.append(PointField(
+            name="x",
+            offset=0,
+            datatype=PointField.FLOAT32, count=1))
+        fields.append(PointField(
+            name="y",
+            offset=4,
+            datatype=PointField.FLOAT32, count=1))
+        fields.append(PointField(
+            name="z",
+            offset=8,
+            datatype=PointField.FLOAT32, count=1))
+        fields.append(PointField(
+            name="rgb",
+            offset=12,
+            datatype=PointField.UINT32, count=1))
+        point_step = 16
 
-        print("Inferred in seconds", time.time() - start)
+        final_ros_cloud = create_cloud(header=header,
+                                       fields=fields,
+                                       points=data)
 
-        # according to this prediction we can color the cloud
-
+        print("Inference time: " + str(time.time() - start))
         self.obstacle_pcd_publisher.publish(final_ros_cloud)
 
 

@@ -56,25 +56,38 @@ class PCDSubPubNode(Node):
         self.min_corner = [-10, -10, -4.5]
         self.max_corner = [10, 10, 1.5]
         self.x_step_size = 1.5
-        self.y_step_size = 0.75
+        self.y_step_size = self.x_step_size / 2.0
         self.min_points = 3
+
+        # Print config parameters
+        self.get_logger().info('Model path: ' + self.model_path)
+        self.get_logger().info('Batch size: ' + str(self.batch_size))
+        self.get_logger().info('Use sim time: ' + str(self.use_sim_time))
+        self.get_logger().info('Min corner: ' + str(self.min_corner))
+        self.get_logger().info('Max corner: ' + str(self.max_corner))
+        self.get_logger().info('X step size: ' + str(self.x_step_size))
+        self.get_logger().info('Y step size: ' + str(self.y_step_size))
+        self.get_logger().info('Min points: ' + str(self.min_points))
+
+        self.from_frame_rel = 'map'
+        self.to_frame_rel = 'lidar_link'
 
         self.pcd_subscriber = self.create_subscription(
             sensor_msgs.PointCloud2,                            # Msg type
             self.local_map_topic_name,                          # topic
             self.listener_callback,                             # Function to call
-            qos_profile=rclpy.qos.qos_profile_sensor_data       # QoS
+            1       # QoS
         )
 
         self.obstacle_pcd_publisher = self.create_publisher(
             sensor_msgs.PointCloud2,
             self.traversablity_detection_topic_name,
-            qos_profile=rclpy.qos.qos_profile_sensor_data)
+            1)
 
         self.box_publisher = self.create_publisher(
             Detection3DArray,
             self.traversablity_crop_boxes_topic_name,
-            qos_profile=rclpy.qos.qos_profile_sensor_data)
+            1)
 
         self.buffer = Buffer()
         self.listener = TransformListener(self.buffer, self)
@@ -96,15 +109,15 @@ class PCDSubPubNode(Node):
             Transforms the point cloud to the base_link frame and then calls the infer function
             publishes the traversability map and crop boxes
         """
+        self.get_logger().info('Received point cloud, Infering...')
 
         try:
             # The local cloud is in "map" frame
             # We need to transform it to "base_link" frame
-            from_frame_rel = 'map'
-            to_frame_rel = 'base_link'
+
             trans = self.buffer.lookup_transform(
-                to_frame_rel,
-                from_frame_rel,
+                self.to_frame_rel,
+                self.from_frame_rel,
                 rclpy.time.Time())
 
             # Now create a open3d point cloud
@@ -118,7 +131,7 @@ class PCDSubPubNode(Node):
 
         except TransformException as ex:
             self.get_logger().info(
-                f'Could not transform {to_frame_rel} to {from_frame_rel}: {ex}')
+                f'Could not transform {self.to_frame_rel} to {self.from_frame_rel}: {ex}')
             return
 
     def batch(self, iterable, n=1):
@@ -253,7 +266,7 @@ class PCDSubPubNode(Node):
                     data_list.append(points)
                     geometries.append(cropped_pcd)
 
-        header.frame_id = "base_link"
+        header.frame_id = self.to_frame_rel
 
         self.populate_and_publish_boxes(boxes, header)
 
@@ -350,7 +363,7 @@ class PCDSubPubNode(Node):
                                        fields=fields,
                                        points=data)
 
-        print("Inference time: " + str(time.time() - start))
+        self.get_logger().info("Inference time: " + str(time.time() - start))
         self.obstacle_pcd_publisher.publish(final_ros_cloud)
 
 

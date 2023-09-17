@@ -50,12 +50,13 @@ class PCDSubPubNode(Node):
         self.model_path = 'weights/epoch_200.pt'
         self.batch_size = 128
         self.use_sim_time = True
+        self.use_two_directions = False
 
         # config for the crop boxes and traversability map
         # crop the cloud to the region of interest
         self.min_corner = [-10, -10, -4.5]
         self.max_corner = [10, 10, 1.5]
-        self.x_step_size = 1.5
+        self.x_step_size = 2.0
         self.y_step_size = self.x_step_size / 2.0
         self.min_points = 3
 
@@ -249,16 +250,18 @@ class PCDSubPubNode(Node):
                     # if this box is centered at the back of the car, we rotate cloud by 180 degrees
                     if (current_max_corner[0] + current_min_corner[0]) / 2 < 0:
                         # rotate by 180 degrees
-                        deep_copy = copy.deepcopy(cropped_pcd)
-                        points = np.asarray(
-                            deep_copy.points).astype(np.float32)
-                        points = pc_normalize(points)
-                        deep_copy.points = o3d.utility.Vector3dVector(points)
-                        R = deep_copy.get_rotation_matrix_from_xyz(
-                            (0, 0, np.pi))
-                        deep_copy.rotate(R, center=(0, 0, 0))
-                        points = np.asarray(
-                            deep_copy.points).astype(np.float32)
+                        if self.use_two_directions:
+                            deep_copy = copy.deepcopy(cropped_pcd)
+                            points = np.asarray(
+                                deep_copy.points).astype(np.float32)
+                            points = pc_normalize(points)
+                            deep_copy.points = o3d.utility.Vector3dVector(
+                                points)
+                            R = deep_copy.get_rotation_matrix_from_xyz(
+                                (0, 0, np.pi))
+                            deep_copy.rotate(R, center=(0, 0, 0))
+                            points = np.asarray(
+                                deep_copy.points).astype(np.float32)
 
                     points = torch.tensor(points)
                     points = points.reshape(

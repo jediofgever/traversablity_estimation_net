@@ -19,7 +19,18 @@ def pc_normalize(pc):
     m = np.max(np.sqrt(np.sum(pc**2, axis=1)))
     pc = pc / m
     return pc
-    
+
+def compute_curvature_static(point_cloud, normals, k=30):
+        curvatures = []
+        tree = o3d.geometry.KDTreeFlann(point_cloud)
+        for i in range(len(point_cloud.points)):
+            _, idx, _ = tree.search_knn_vector_3d(point_cloud.points[i], k)
+            covariance_matrix = np.cov(np.array([point_cloud.points[j] for j in idx[1:]], dtype=np.float64), rowvar=False)
+            eigenvalues, _ = np.linalg.eigh(covariance_matrix)
+            curvature = eigenvalues[0] / (eigenvalues[0] + eigenvalues[1] + eigenvalues[2])
+            curvatures.append(curvature)
+        return curvatures
+        
 class TerrainDatasetIMU(InMemoryDataset):
 
     def __init__(self, root: str, 

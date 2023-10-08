@@ -56,8 +56,8 @@ class PCDSubPubNode(Node):
         # crop the cloud to the region of interest
         self.min_corner = [-10, -10, -4.5]
         self.max_corner = [10, 10, 1.5]
-        self.x_step_size = 2.0
-        self.y_step_size = self.x_step_size / 2.0
+        self.x_step_size = 1.5
+        self.y_step_size = 2.0*self.x_step_size / 3.0
         self.min_points = 3
 
         # Print config parameters
@@ -71,7 +71,7 @@ class PCDSubPubNode(Node):
         self.get_logger().info('Min points: ' + str(self.min_points))
 
         self.from_frame_rel = 'map'
-        self.to_frame_rel = 'lidar_link'
+        self.to_frame_rel = 'base_link'
 
         self.pcd_subscriber = self.create_subscription(
             sensor_msgs.PointCloud2,                            # Msg type
@@ -83,7 +83,8 @@ class PCDSubPubNode(Node):
         self.obstacle_pcd_publisher = self.create_publisher(
             sensor_msgs.PointCloud2,
             self.traversablity_detection_topic_name,
-            1)
+            # 1)
+            rclpy.qos.qos_profile_sensor_data)
 
         self.box_publisher = self.create_publisher(
             Detection3DArray,
@@ -115,7 +116,6 @@ class PCDSubPubNode(Node):
         try:
             # The local cloud is in "map" frame
             # We need to transform it to "base_link" frame
-
             trans = self.buffer.lookup_transform(
                 self.to_frame_rel,
                 self.from_frame_rel,

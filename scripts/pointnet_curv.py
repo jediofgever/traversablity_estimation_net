@@ -10,11 +10,11 @@ import torch.optim as optim
 class PointnetCurv(nn.Module):
     def __init__(self):
         super(PointnetCurv, self).__init__()
-        self.conv1 = nn.Conv1d(4, 64, 1)
-        self.conv2 = nn.Conv1d(64, 128, 1)
-        self.fc1 = nn.Linear(128, 256)
-        self.fc2 = nn.Linear(256, 32)
-        self.fc3 = nn.Linear(32+13, 1)  # just 1 classes
+        self.conv1 = nn.Conv1d(6, 128, 1)
+        self.conv2 = nn.Conv1d(128, 256, 1)
+        self.fc1 = nn.Linear(256, 512)
+        self.fc2 = nn.Linear(512, 64)
+        self.fc3 = nn.Linear(64+13, 1)  # just 1 classes
         # TODO
         # Concat additinal 9 + 4 features to fc3 layer
         # The 9 features are flattened from the 3x3 covariance matrix

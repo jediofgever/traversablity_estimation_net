@@ -112,8 +112,9 @@ class TerrainDatasetIMU(InMemoryDataset):
             o3d_cloud = o3d.io.read_point_cloud(files[i])
             
             # Estimate normals
-            o3d_cloud.estimate_normals(search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=0.1, max_nn=30))
-            curvatures = np.asarray(self.compute_curvature(o3d_cloud, o3d_cloud.normals)).astype(np.float32)
+            o3d_cloud.estimate_normals(search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=0.15, max_nn=30))
+            #curvatures = np.asarray(self.compute_curvature(o3d_cloud, o3d_cloud.normals)).astype(np.float32)
+            normals = np.asarray(o3d_cloud.normals).astype(np.float32)
     
             label = self.extract_label(files[i])             
             points = np.asarray(o3d_cloud.points).astype(np.float32)
@@ -123,8 +124,8 @@ class TerrainDatasetIMU(InMemoryDataset):
             #print shapes of points and curvatures
             #print("Points shape: ", points.shape) 
             #print("Curvatures shape: ", np.asarray(curvatures).shape)
-            curvatures_reshaped = curvatures[:, np.newaxis]
-            points = np.hstack((points, curvatures_reshaped))
+            #curvatures_reshaped = curvatures[:, np.newaxis]
+            points = np.hstack((points, normals))
             # concat such that each point has also a curvature value
             #print("Points shape after concat: ", points.shape)
             
@@ -187,14 +188,15 @@ class TerrainDatasetIMU(InMemoryDataset):
             points = np.asarray(o3d_cloud.points).astype(np.float32)
             
             # Estimate normals
-            o3d_cloud.estimate_normals(search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=0.1, max_nn=30))
-            curvatures = np.asarray(self.compute_curvature(o3d_cloud, o3d_cloud.normals)).astype(np.float32)
+            o3d_cloud.estimate_normals(search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=0.15, max_nn=30))
+            #curvatures = np.asarray(self.compute_curvature(o3d_cloud, o3d_cloud.normals)).astype(np.float32)
+            normals = np.asarray(o3d_cloud.normals).astype(np.float32)
             points = pc_normalize(points)
             
-            print("Points shape: ", points.shape) 
-            print("Curvatures shape: ", curvatures.shape)
-            curvatures_reshaped = curvatures[:, np.newaxis]
-            points = np.hstack((points, curvatures_reshaped))
+            #print("Points shape: ", points.shape) 
+            #print("Curvatures shape: ", curvatures.shape)
+            #curvatures_reshaped = curvatures[:, np.newaxis]
+            points = np.hstack((points, normals))
             # concat such that each point has also a curvature value
             print("Points shape after concat: ", points.shape)
             
@@ -233,19 +235,20 @@ class TerrainDatasetIMU(InMemoryDataset):
             
             # Estimate normals
             o3d_cloud.estimate_normals(search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=0.1, max_nn=30))
-            curvatures = np.asarray(self.compute_curvature(o3d_cloud, o3d_cloud.normals)).astype(np.float32)
+            normals = np.asarray(o3d_cloud.normals).astype(np.float32)
+            #curvatures = np.asarray(self.compute_curvature(o3d_cloud, o3d_cloud.normals)).astype(np.float32)
              
             label = self.extract_label(selected_files[i])             
             points = np.asarray(o3d_cloud.points).astype(np.float32)
             points = pc_normalize(points)
             
             # Add curvatures to the points
-            print("Points shape: ", points.shape) 
-            print("Curvatures shape: ", np.asarray(curvatures).shape)
-            curvatures_reshaped = curvatures[:, np.newaxis]
-            points = np.hstack((points, curvatures_reshaped))
+            #print("Points shape: ", points.shape) 
+            #print("Curvatures shape: ", np.asarray(curvatures).shape)
+            #curvatures_reshaped = curvatures[:, np.newaxis]
+            points = np.hstack((points, normals))
             # concat such that each point has also a curvature value
-            print("Points shape after concat: ", points.shape)
+            #print("Points shape after concat: ", points.shape)
             
             points = torch.tensor(points)
             label = torch.tensor(np.asarray([label]).astype(np.float32))

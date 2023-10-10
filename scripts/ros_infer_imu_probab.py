@@ -30,6 +30,43 @@ from datasetIMU import compute_curvature_static
 
 import matplotlib.pyplot as plt
 
+def scalar_to_rgb(scalar):
+    # Invert the scalar value (1 - scalar) to map high values to low hue (green)
+    inverted_scalar = 1 - scalar
+
+    # Map the inverted scalar value to the HSV color space
+    hue = inverted_scalar * 240  # 0 to 1 maps to 0° to 240° (green to red)
+    saturation = 1.0   # Full saturation
+    value = 1.0        # Full brightness
+
+    # Convert HSV to RGB
+    hue /= 60.0
+    chroma = value * saturation
+    x = chroma * (1 - abs(hue % 2 - 1))
+    
+    if 0 <= hue < 1:
+        r, g, b = chroma, x, 0
+    elif 1 <= hue < 2:
+        r, g, b = x, chroma, 0
+    elif 2 <= hue < 3:
+        r, g, b = 0, chroma, x
+    elif 3 <= hue < 4:
+        r, g, b = 0, x, chroma
+    elif 4 <= hue < 5:
+        r, g, b = x, 0, chroma
+    else:
+        r, g, b = chroma, 0, x
+
+    m = value - chroma
+    r, g, b = r + m, g + m, b + m
+
+    # Scale RGB values to the range [0, 1]
+    r /= 1.0
+    g /= 1.0
+    b /= 1.0
+
+    return r, g, b
+
 
 class PCDSubPubNode(Node):
     """ Node for subscribing to a point cloud and publishing the traversability map
@@ -53,18 +90,21 @@ class PCDSubPubNode(Node):
                                self.traversablity_crop_boxes_topic_name)
 
         self.model_path = 'weights/epoch_550.pt'
-        self.batch_size = 128
+        self.batch_size = 256
         self.use_sim_time = True
         self.use_two_directions = False
-        
 
         # config for the crop boxes and traversability map
         # crop the cloud to the region of interest
-        self.min_corner = [-5, -5, -4.5]
-        self.max_corner = [5, 5, 1.5]
-        self.x_step_size = 1.0
-        self.y_step_size = 2.0*self.x_step_size / 3.0
+        self.min_corner = [-4, -4, -4.5]
+        self.max_corner = [4, 4, 1.5]
+        self.x_box_size = 2.0
+        self.y_box_size = self.x_box_size / 2.0
         self.min_points = 3
+        self.x_step_size = self.x_box_size / 2.0
+        self.y_step_size = self.y_box_size / 2.0
+        self.kdtree_radius = 0.3
+        self.cropped_cloud_downsample_size = 0.2
         
         # size of imu data array (1, 13)
         self.latest_imu_data = np.zeros((13, 1))
@@ -75,9 +115,12 @@ class PCDSubPubNode(Node):
         self.get_logger().info('Use sim time: ' + str(self.use_sim_time))
         self.get_logger().info('Min corner: ' + str(self.min_corner))
         self.get_logger().info('Max corner: ' + str(self.max_corner))
+        self.get_logger().info('X box size: ' + str(self.x_box_size))
+        self.get_logger().info('Y box size: ' + str(self.y_box_size))
         self.get_logger().info('X step size: ' + str(self.x_step_size))
         self.get_logger().info('Y step size: ' + str(self.y_step_size))
         self.get_logger().info('Min points: ' + str(self.min_points))
+        self.get_logger().info('kd tree radius: ' + str(self.kdtree_radius))
 
         self.from_frame_rel = 'odom'
         self.to_frame_rel = 'base_link'
@@ -90,7 +133,6 @@ class PCDSubPubNode(Node):
         )
         
         self.imu_subscriber = self.create_subscription(Float32MultiArray, 'imu_info', self.imu_callback, 1)
-
 
         self.obstacle_pcd_publisher = self.create_publisher(
             sensor_msgs.PointCloud2,
@@ -225,10 +267,15 @@ class PCDSubPubNode(Node):
             self.min_corner, self.max_corner))
         
         pcd.estimate_normals(
-            search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=0.15, max_nn=30))
+            search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=0.15, max_nn=15))
                 
         # downsample the cloud
-        pcd = pcd.voxel_down_sample(voxel_size=0.08)
+        pcd = pcd.voxel_down_sample(voxel_size=0.05)
+        
+        # paint the cloud with zeros 
+        pcd.paint_uniform_color([0, 0, 0])
+        
+        pcd_tree = o3d.geometry.KDTreeFlann(pcd)    
         
         x_dist = abs(self.max_corner[0] - self.min_corner[0])
         y_dist = abs(self.max_corner[1] - self.min_corner[1])
@@ -238,9 +285,9 @@ class PCDSubPubNode(Node):
         data_list = []
         non_normalized_points = []
 
-        for x in range(0, int(x_dist / self.x_step_size+1)):
+        for x in range(0, int(x_dist / self.x_step_size)):
 
-            for y in range(0, int(y_dist / self.y_step_size+1)):
+            for y in range(0, int(y_dist / self.y_step_size)):
 
                 current_min_corner = [
                     self.min_corner[0] + self.x_step_size * x,
@@ -248,8 +295,8 @@ class PCDSubPubNode(Node):
                 ]
 
                 current_max_corner = [
-                    current_min_corner[0] + self.x_step_size,
-                    current_min_corner[1] + self.y_step_size,  1.5,
+                    current_min_corner[0] + self.x_box_size,
+                    current_min_corner[1] + self.y_box_size,  1.5,
                 ]
 
                 this_box = o3d.geometry.AxisAlignedBoundingBox(
@@ -263,11 +310,7 @@ class PCDSubPubNode(Node):
                 if len(cropped_pcd.points) < self.min_points:
                     continue
                 else:
-
-                    #curvatures = np.asarray(compute_curvature_static(cropped_pcd, cropped_pcd.normals)).astype(np.float32)
-                    #curvatures_reshaped = curvatures[:, np.newaxis]
                     normals = np.asarray(cropped_pcd.normals).astype(np.float32)
-
                     points = np.asarray(cropped_pcd.points).astype(np.float32)
                     non_normalized_crop = copy.deepcopy(points)
                     non_normalized_points.append(torch.tensor(non_normalized_crop))
@@ -305,6 +348,12 @@ class PCDSubPubNode(Node):
         final_cloud = o3d.geometry.PointCloud()
         final_cloud_points = []
         final_cloud_colors = []
+        
+        # reset all the normals to zero in pcd 
+        pcd.normals = o3d.utility.Vector3dVector(np.zeros((len(pcd.points), 3)))
+        colormap = plt.get_cmap('cividis')
+        norm = plt.Normalize(vmin=0, vmax=1)
+        # use x component of normals to store the traversability values
 
         # measure net inference time
         for x in self.batch(data_list, self.batch_size):
@@ -328,48 +377,44 @@ class PCDSubPubNode(Node):
             print("imu data shape: ", imu_data.shape)
 
             predictions = self.net(points, imu_data, batches).cpu().detach().numpy()
+            
+            
 
-            for p in predictions:
+            for crop_index, p in enumerate(predictions):
                 p = np.clip(p, 0, 1)
-                
-                # Define a value in the range [0, 1]
-                value = p[0]
+                downsampled_crop = geometries[crop_index].voxel_down_sample(voxel_size=self.cropped_cloud_downsample_size)
+                non_normalized_crop = np.asarray(downsampled_crop.points)
+                pcd_normals = np.asarray(pcd.normals)
+                pcd_colors = np.asarray(pcd.colors)
+            
 
-                # Choose a colormap (e.g., 'viridis')
-                colormap = plt.get_cmap('cividis')
+                for point in non_normalized_crop:
+                    # Find neighbors in the original cloud kdtree
+                    [k, idx, _] = pcd_tree.search_radius_vector_3d(point, self.kdtree_radius)
 
-                # Map the value to an RGB color
-                color = colormap(value)
-                
-                norm = plt.Normalize(vmin=0, vmax=1)
-                
-                color = norm(color)
+                    if len(idx) > 0:
+                        mean_x_normal = np.mean(pcd_normals[idx], axis=0)[0]
+                        
+                        #continue
+                        updated_x_normal = (len(idx) * mean_x_normal + p[0]) / (len(idx) + 1)
 
+                        # Update normals and colors
+                        pcd_normals[idx, 0] = updated_x_normal
+                        
+                        r, g, b = scalar_to_rgb(updated_x_normal)
 
-                geometries[crop_index].paint_uniform_color(
-                        [color[0], color[1], color[2]])
- 
-                curr_points = np.asarray(
-                    geometries[crop_index].points, dtype=np.float32)
-                curr_colors = np.asarray(
-                    geometries[crop_index].colors, dtype=np.float32)
-
-                final_cloud_colors.extend(curr_colors.tolist())
-
-                crop_index = crop_index + 1
+                        
+                        pcd_colors[idx[1:], :] = [r,g,b]
         
-
         if len(non_normalized_points) == 0:
             self.get_logger().info("No points in the cloud")
             return
 
-        final_cloud_points = torch.cat(
-            non_normalized_points, dim=0).cpu().detach().numpy()
         final_cloud.points = o3d.utility.Vector3dVector(
-            np.asarray(final_cloud_points, dtype=np.float32))
+            np.asarray(pcd.points, dtype=np.float32))
         final_cloud.colors = o3d.utility.Vector3dVector(
-            np.asarray(final_cloud_colors, dtype=np.float32))
-
+            np.asarray(pcd.colors, dtype=np.float32))
+        
         cloud_npy = np.asarray(copy.deepcopy(final_cloud.points))
 
         n_points = len(cloud_npy[:, 0])

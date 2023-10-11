@@ -14,8 +14,9 @@ def generate_launch_description():
         ],
         parameters=[
             {"use_sim_time": True,
-             "kdtree_search_radius": 0.5,
-             "cropped_cloud_voxel_size": 0.2,
+             "octree_voxel_size": 0.2,
+             "neighbouring_search_radius": 0.3,
+             "smoothed_cloud_downsample_voxel_size": 0.05,   
              },
             
  

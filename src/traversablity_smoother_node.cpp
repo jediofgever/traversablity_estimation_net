@@ -51,10 +51,6 @@ namespace vox_nav_misc
 class traversability_smoother : public rclcpp::Node
 {
 private:
-  // tf buffer and listener
-  std::shared_ptr<tf2_ros::Buffer> tf_buffer_;
-  std::shared_ptr<tf2_ros::TransformListener> tf_listener_;
-
   typedef message_filters::sync_policies::ApproximateTime<vision_msgs::msg::Detection3DArray,
                                                           sensor_msgs::msg::PointCloud2>
       BoxLidarpprxTimeSyncPolicy;
@@ -67,8 +63,9 @@ private:
 
   rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr smmothed_traversability_pub_;
 
-  float kdtree_search_radius_;
-  float cropped_cloud_voxel_size_;
+  float octree_voxel_size_;
+  float neighbouring_search_radius_;
+  float smoothed_cloud_downsample_voxel_size_;
 
 public:
   traversability_smoother();
@@ -82,70 +79,6 @@ public:
    */
   void boxLidarCallback(const vision_msgs::msg::Detection3DArray::ConstSharedPtr& boxes,
                         const sensor_msgs::msg::PointCloud2::ConstSharedPtr& cloud);
-
-  std::tuple<double, double, double> scalar_to_rgb(double scalar)
-  {
-    // Ensure scalar is within the range [0, 1]
-    if (scalar < 0.0)
-      scalar = 0.0;
-    if (scalar > 1.0)
-      scalar = 1.0;
-
-    // Map the scalar value directly to the HSV color space
-    double hue = (1.0 - scalar) * 240.0;  // 0 to 1 maps to 240° to 0° (blue to red)
-    double saturation = 1.0;              // Full saturation
-    double value = 1.0;                   // Full brightness
-
-    // Convert HSV to RGB
-    hue /= 60.0;
-    double chroma = value * saturation;
-    double x = chroma * (1.0 - std::abs(std::fmod(hue, 2.0) - 1.0));
-
-    double r, g, b;
-    if (0.0 <= hue && hue < 1.0)
-    {
-      r = chroma;
-      g = x;
-      b = 0.0;
-    }
-    else if (1.0 <= hue && hue < 2.0)
-    {
-      r = x;
-      g = chroma;
-      b = 0.0;
-    }
-    else if (2.0 <= hue && hue < 3.0)
-    {
-      r = 0.0;
-      g = chroma;
-      b = x;
-    }
-    else if (3.0 <= hue && hue < 4.0)
-    {
-      r = 0.0;
-      g = x;
-      b = chroma;
-    }
-    else if (4.0 <= hue && hue < 5.0)
-    {
-      r = x;
-      g = 0.0;
-      b = chroma;
-    }
-    else
-    {
-      r = chroma;
-      g = 0.0;
-      b = x;
-    }
-
-    double m = value - chroma;
-    r += m;
-    g += m;
-    b += m;
-
-    return std::make_tuple(r, g, b);
-  }
 
   const double EPSILON = std::numeric_limits<double>::epsilon();
 
@@ -185,10 +118,6 @@ public:
 
 traversability_smoother::traversability_smoother() : rclcpp::Node("traversability_smoother_rclcpp_node")
 {
-  // init tf buffer and listener
-  tf_buffer_ = std::make_shared<tf2_ros::Buffer>(this->get_clock());
-  tf_listener_ = std::make_shared<tf2_ros::TransformListener>(*tf_buffer_);
-
   detection_boxes_subscriber_.subscribe(this, "boxes", rmw_qos_profile_sensor_data);
   lidar_subscriber_.subscribe(this, "points", rmw_qos_profile_sensor_data);
 
@@ -199,10 +128,12 @@ traversability_smoother::traversability_smoother() : rclcpp::Node("traversabilit
 
   smmothed_traversability_pub_ = this->create_publisher<sensor_msgs::msg::PointCloud2>("smoothed_traversability", 1);
 
-  declare_parameter("kdtree_search_radius", 0.3);
-  get_parameter("kdtree_search_radius", kdtree_search_radius_);
-  declare_parameter("downsample_voxel_size", 0.1);
-  get_parameter("cropped_cloud_voxel_size", cropped_cloud_voxel_size_);
+  declare_parameter("octree_voxel_size", 0.2);
+  get_parameter("octree_voxel_size", octree_voxel_size_);
+  declare_parameter("neighbouring_search_radius", 0.3);
+  get_parameter("neighbouring_search_radius", neighbouring_search_radius_);
+  declare_parameter("smoothed_cloud_downsample_voxel_size", 0.05);
+  get_parameter("smoothed_cloud_downsample_voxel_size", smoothed_cloud_downsample_voxel_size_);
 
   // inform user the node has started
   RCLCPP_INFO(get_logger(), "traversability_smoother_rclcpp_node has started.");
@@ -270,7 +201,7 @@ void traversability_smoother::boxLidarCallback(const vision_msgs::msg::Detection
   }
 
   // Now create an Octree from the point cloud
-  pcl::octree::OctreePointCloudSearch<pcl::PointXYZI> octree(0.2);
+  pcl::octree::OctreePointCloudSearch<pcl::PointXYZI> octree(octree_voxel_size_);
   octree.setInputCloud(pcl_cloud_stacked);
   octree.addPointsFromInputCloud();
 
@@ -285,8 +216,8 @@ void traversability_smoother::boxLidarCallback(const vision_msgs::msg::Detection
     // get all points in a sphere around this voxel center
     std::vector<int> pointIdxRadiusSearch;
     std::vector<float> pointRadiusSquaredDistance;
-    float radius = 0.3;
-    if (octree.radiusSearch(voxel_center, radius, pointIdxRadiusSearch, pointRadiusSquaredDistance) > 0)
+    if (octree.radiusSearch(voxel_center, neighbouring_search_radius_, pointIdxRadiusSearch,
+                            pointRadiusSquaredDistance) > 0)
     {
       float mean_intensity = 0.0;
       for (size_t i = 0; i < pointIdxRadiusSearch.size(); ++i)
@@ -306,7 +237,8 @@ void traversability_smoother::boxLidarCallback(const vision_msgs::msg::Detection
   pcl::PointCloud<pcl::PointXYZI>::Ptr downsampled_pcl_cloud_stacked(new pcl::PointCloud<pcl::PointXYZI>);
   pcl::VoxelGrid<pcl::PointXYZI> voxel_grid_filter;
   voxel_grid_filter.setInputCloud(pcl_cloud_stacked);
-  voxel_grid_filter.setLeafSize(0.05, 0.05, 0.05);
+  voxel_grid_filter.setLeafSize(smoothed_cloud_downsample_voxel_size_, smoothed_cloud_downsample_voxel_size_,
+                                smoothed_cloud_downsample_voxel_size_);
   voxel_grid_filter.filter(*downsampled_pcl_cloud_stacked);
 
   pcl::PointCloud<pcl::PointXYZRGB>::Ptr pcl_cloud_rgb(new pcl::PointCloud<pcl::PointXYZRGB>);

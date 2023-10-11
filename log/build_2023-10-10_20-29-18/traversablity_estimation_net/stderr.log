@@ -1,0 +1,11 @@
+In file included from [01m[K/home/atas/RESEARCH/traversablity_estimation_net/src/traversablity_smoother_node.cpp:31[m[K:
+[01m[K/opt/ros/humble/include/tf2_geometry_msgs/tf2_geometry_msgs/tf2_geometry_msgs.h:35:2:[m[K [01;35m[Kwarning: [m[K#warning This header is obsolete, please include tf2_geometry_msgs/tf2_geometry_msgs.hpp instead [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wcpp-Wcpp]8;;[m[K]
+   35 | #[01;35m[Kwarning[m[K This header is obsolete, please include tf2_geometry_msgs/tf2_geometry_msgs.hpp instead
+      |  [01;35m[K^~~~~~~[m[K
+[01m[K/home/atas/RESEARCH/traversablity_estimation_net/src/traversablity_smoother_node.cpp:35:10:[m[K [01;31m[Kfatal error: [m[Kopencv2/core/core.hpp: No such file or directory
+   35 | #include [01;31m[K<opencv2/core/core.hpp>[m[K
+      |          [01;31m[K^~~~~~~~~~~~~~~~~~~~~~~[m[K
+compilation terminated.
+gmake[2]: *** [CMakeFiles/traversablity_smoother_node.dir/build.make:76: CMakeFiles/traversablity_smoother_node.dir/src/traversablity_smoother_node.cpp.o] Error 1
+gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/traversablity_smoother_node.dir/all] Error 2
+gmake: *** [Makefile:146: all] Error 2

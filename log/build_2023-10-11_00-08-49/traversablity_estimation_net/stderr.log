@@ -1,0 +1,48 @@
+In file included from [01m[K/opt/ros/humble/include/rclcpp/rclcpp/logging.hpp:24[m[K,
+                 from [01m[K/opt/ros/humble/include/rclcpp/rclcpp/client.hpp:40[m[K,
+                 from [01m[K/opt/ros/humble/include/rclcpp/rclcpp/callback_group.hpp:24[m[K,
+                 from [01m[K/opt/ros/humble/include/rclcpp/rclcpp/any_executable.hpp:20[m[K,
+                 from [01m[K/opt/ros/humble/include/rclcpp/rclcpp/memory_strategy.hpp:25[m[K,
+                 from [01m[K/opt/ros/humble/include/rclcpp/rclcpp/memory_strategies.hpp:18[m[K,
+                 from [01m[K/opt/ros/humble/include/rclcpp/rclcpp/executor_options.hpp:20[m[K,
+                 from [01m[K/opt/ros/humble/include/rclcpp/rclcpp/executor.hpp:37[m[K,
+                 from [01m[K/opt/ros/humble/include/rclcpp/rclcpp/executors/multi_threaded_executor.hpp:25[m[K,
+                 from [01m[K/opt/ros/humble/include/rclcpp/rclcpp/executors.hpp:21[m[K,
+                 from [01m[K/opt/ros/humble/include/rclcpp/rclcpp/rclcpp.hpp:155[m[K,
+                 from [01m[K/home/atas/RESEARCH/traversablity_estimation_net/src/traversablity_smoother_node.cpp:15[m[K:
+[01m[K/home/atas/RESEARCH/traversablity_estimation_net/src/traversablity_smoother_node.cpp:[m[K In member function ‘[01m[Kvoid vox_nav_misc::traversability_smoother::boxLidarCallback(const ConstSharedPtr&, const ConstSharedPtr&)[m[K’:
+[01m[K/home/atas/RESEARCH/traversablity_estimation_net/src/traversablity_smoother_node.cpp:172:29:[m[K [01;35m[Kwarning: [m[Kformat ‘[01m[K%d[m[K’ expects argument of type ‘[01m[Kint[m[K’, but argument 5 has type ‘[01m[Kstd::vector<vision_msgs::msg::Detection3D_<std::allocator<void> >, std::allocator<vision_msgs::msg::Detection3D_<std::allocator<void> > > >::size_type[m[K’ {aka ‘[01m[Klong unsigned int[m[K’} [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wformat=-Wformat=]8;;[m[K]
+  172 |   RCLCPP_INFO(get_logger(), [01;35m[K"Number of boxes: %d"[m[K, [32m[Kboxes->detections.size()[m[K);
+      |                             [01;35m[K^~~~~~~~~~~~~~~~~~~~~[m[K  [32m[K~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+      |                                                                          [32m[K|[m[K
+      |                                                                          [32m[Kstd::vector<vision_msgs::msg::Detection3D_<std::allocator<void> >, std::allocator<vision_msgs::msg::Detection3D_<std::allocator<void> > > >::size_type {aka long unsigned int}[m[K
+[01m[K/home/atas/RESEARCH/traversablity_estimation_net/src/traversablity_smoother_node.cpp:172:48:[m[K [01;36m[Knote: [m[Kformat string is defined here
+  172 |   RCLCPP_INFO(get_logger(), "Number of boxes: [01;36m[K%d[m[K", boxes->detections.size());
+      |                                               [01;36m[K~^[m[K
+      |                                                [01;36m[K|[m[K
+      |                                                [01;36m[Kint[m[K
+      |                                               [32m[K%ld[m[K
+[01m[K/home/atas/RESEARCH/traversablity_estimation_net/src/traversablity_smoother_node.cpp:182:14:[m[K [01;31m[Kerror: [m[K‘[01m[Kmake_shared[m[K’ is not a member of ‘[01m[Kboost[m[K’
+  182 |       boost::[01;31m[Kmake_shared[m[K<const pcl::PointRepresentation<pcl::PointXYZRGB>>(&pcl_cloud->points[0], 3));
+      |              [01;31m[K^~~~~~~~~~~[m[K
+[01m[K/home/atas/RESEARCH/traversablity_estimation_net/src/traversablity_smoother_node.cpp:182:14:[m[K [01;36m[Knote: [m[Ksuggested alternatives:
+In file included from [01m[K/usr/include/c++/11/memory:77[m[K,
+                 from [01m[K/opt/ros/humble/include/rclcpp/rclcpp/rclcpp.hpp:153[m[K,
+                 from [01m[K/home/atas/RESEARCH/traversablity_estimation_net/src/traversablity_smoother_node.cpp:15[m[K:
+[01m[K/usr/include/c++/11/bits/shared_ptr.h:875:5:[m[K [01;36m[Knote: [m[K  ‘[01m[Kstd::make_shared[m[K’
+  875 |     [01;36m[Kmake_shared[m[K(_Args&&... __args)
+      |     [01;36m[K^~~~~~~~~~~[m[K
+In file included from [01m[K/usr/include/pcl-1.12/pcl/PCLHeader.h:3[m[K,
+                 from [01m[K/usr/include/pcl-1.12/pcl/point_cloud.h:47[m[K,
+                 from [01m[K/usr/include/pcl-1.12/pcl/common/transforms.h:42[m[K,
+                 from [01m[K/opt/ros/humble/include/pcl_ros/transforms.hpp:40[m[K,
+                 from [01m[K/home/atas/RESEARCH/traversablity_estimation_net/src/traversablity_smoother_node.cpp:34[m[K:
+[01m[K/usr/include/pcl-1.12/pcl/memory.h:122:66:[m[K [01;36m[Knote: [m[K  ‘[01m[Kpcl::make_shared[m[K’
+  122 | std::enable_if_t<!has_custom_allocator<T>::value, shared_ptr<T>> [01;36m[Kmake_shared[m[K(Args&&... args)
+      |                                                                  [01;36m[K^~~~~~~~~~~[m[K
+[01m[K/home/atas/RESEARCH/traversablity_estimation_net/src/traversablity_smoother_node.cpp:182:26:[m[K [01;31m[Kerror: [m[Kexpected primary-expression before ‘[01m[Kconst[m[K’
+  182 |       boost::make_shared<[01;31m[Kconst[m[K pcl::PointRepresentation<pcl::PointXYZRGB>>(&pcl_cloud->points[0], 3));
+      |                          [01;31m[K^~~~~[m[K
+gmake[2]: *** [CMakeFiles/traversablity_smoother_node.dir/build.make:76: CMakeFiles/traversablity_smoother_node.dir/src/traversablity_smoother_node.cpp.o] Error 1
+gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/traversablity_smoother_node.dir/all] Error 2
+gmake: *** [Makefile:146: all] Error 2

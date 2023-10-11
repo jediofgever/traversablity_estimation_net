@@ -1,0 +1,539 @@
+[0.000000] (-) TimerEvent: {}
+[0.000773] (traversablity_estimation_net) JobQueued: {'identifier': 'traversablity_estimation_net', 'dependencies': OrderedDict()}
+[0.001007] (traversablity_estimation_net) JobStarted: {'identifier': 'traversablity_estimation_net'}
+[0.099645] (-) TimerEvent: {}
+[0.200150] (-) TimerEvent: {}
+[0.272006] (traversablity_estimation_net) JobProgress: {'identifier': 'traversablity_estimation_net', 'progress': 'cmake'}
+[0.274666] (traversablity_estimation_net) JobProgress: {'identifier': 'traversablity_estimation_net', 'progress': 'build'}
+[0.274754] (traversablity_estimation_net) Command: {'cmd': ['/usr/local/bin/cmake', '--build', '/home/atas/RESEARCH/traversablity_estimation_net/build/traversablity_estimation_net', '--', '-j8', '-l8'], 'cwd': '/home/atas/RESEARCH/traversablity_estimation_net/build/traversablity_estimation_net', 'env': OrderedDict([('LESSOPEN', '| /usr/bin/lesspipe %s'), ('USER', 'atas'), ('LC_TIME', 'nb_NO.UTF-8'), ('ROS_PACKAGE_PATH', '/home/atas/ros2_ws/install/serial/share:/home/atas/ros2_ws/install/fast_gicp/share'), ('XDG_SESSION_TYPE', 'x11'), ('SHLVL', '1'), ('LD_LIBRARY_PATH', '/home/atas/Downloads/TensorRT-8.4.1.5/targets/x86_64-linux-gnu/lib:/usr/local/cuda-11.7/lib64:/usr/local/cuda/lib64:/home/atas/ros2_ws/install/vox_nav_planning/lib:/home/atas/ros2_ws/install/vox_nav_navigators/lib:/home/atas/ros2_ws/install/vox_nav_control/lib:/home/atas/ros2_ws/install/thorvald_gui/lib:/home/atas/ros2_ws/install/vox_nav_utilities/lib:/home/atas/ros2_ws/install/robot_centric_slam/lib:/home/atas/ros2_ws/install/vox_nav_slam_msgs/lib:/home/atas/ros2_ws/install/vox_nav_msgs/lib:/home/atas/ros2_ws/install/vdb_mapping_interfaces/lib:/home/atas/ros2_ws/install/vdb_mapping/lib:/home/atas/ros2_ws/install/thorvald_gazebo_plugins/lib:/home/atas/ros2_ws/install/thorvald_base/lib:/home/atas/ros2_ws/install/thorvald_utilities/lib:/home/atas/ros2_ws/install/thorvald_msgs/lib:/home/atas/ros2_ws/install/thorvald_can_devices/lib:/home/atas/ros2_ws/install/tensorrt_common/lib:/home/atas/ros2_ws/install/sensor_drivers_bringup/lib:/home/atas/ros2_ws/install/rviz_imu_plugin/lib:/home/atas/ros2_ws/install/robot_localization/lib:/home/atas/ros2_ws/install/realsense_camera_msgs/lib:/home/atas/ros2_ws/install/ouster_ros/lib:/home/atas/ros2_ws/install/ouster_msgs/lib:/home/atas/ros2_ws/install/ompl/lib:/home/atas/ros2_ws/install/lio_sam/lib:/home/atas/ros2_ws/install/kiss_icp/lib:/home/atas/ros2_ws/install/imu_filter_madgwick/lib:/home/atas/ros2_ws/install/imu_complementary_filter/lib:/home/atas/ros2_ws/install/fast_gicp/lib:/home/atas/ros2_ws/install/casadi/lib:/home/atas/ros2_ws/install/ACADO/lib:/usr/lib/x86_64-linux-gnu/gazebo-11/plugins:/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib'), ('HOME', '/home/atas'), ('OLDPWD', '/home/atas/RESEARCH'), ('DESKTOP_SESSION', 'ubuntu'), ('ROS_PYTHON_VERSION', '3'), ('GNOME_SHELL_SESSION_MODE', 'ubuntu'), ('GTK_MODULES', 'gail:atk-bridge'), ('LC_MONETARY', 'nb_NO.UTF-8'), ('MANAGERPID', '184163'), ('SYSTEMD_EXEC_PID', '184717'), ('DBUS_SESSION_BUS_ADDRESS', 'unix:path=/run/user/1000/bus'), ('COLORTERM', 'truecolor'), ('TERMINATOR_DBUS_NAME', 'net.tenshu.Terminator23558193cd9818af7fe4d2c2f5bd9d00f'), ('GIO_LAUNCHED_DESKTOP_FILE_PID', '194061'), ('MANDATORY_PATH', '/usr/share/gconf/ubuntu.mandatory.path'), ('IM_CONFIG_PHASE', '1'), ('COLCON_PREFIX_PATH', '/home/atas/RESEARCH/traversablity_estimation_net/install:/home/atas/ros2_ws/install'), ('ROS_DISTRO', 'humble'), ('GTK_IM_MODULE', 'ibus'), ('LOGNAME', 'atas'), ('JOURNAL_STREAM', '8:4419609'), ('_', '/usr/bin/colcon'), ('ROS_VERSION', '2'), ('PKG_CONFIG_PATH', '/home/atas/ros2_ws/install/vdb_mapping/lib/x86_64-linux-gnu/pkgconfig:/home/atas/ros2_ws/install/vdb_mapping/lib/pkgconfig:/home/atas/ros2_ws/install/serial/lib/x86_64-linux-gnu/pkgconfig:/home/atas/ros2_ws/install/serial/lib/pkgconfig:/home/atas/ros2_ws/install/ompl/lib/x86_64-linux-gnu/pkgconfig:/home/atas/ros2_ws/install/ompl/lib/pkgconfig:/home/atas/ros2_ws/install/fast_gicp/lib/x86_64-linux-gnu/pkgconfig:/home/atas/ros2_ws/install/fast_gicp/lib/pkgconfig:/home/atas/ros2_ws/install/casadi/lib/pkgconfig'), ('XDG_SESSION_CLASS', 'user'), ('DEFAULTS_PATH', '/usr/share/gconf/ubuntu.default.path'), ('USERNAME', 'atas'), ('TERM', 'xterm-256color'), ('GNOME_DESKTOP_SESSION_ID', 'this-is-deprecated'), ('ROS_LOCALHOST_ONLY', '0'), ('WINDOWPATH', '2'), ('PATH', '/usr/local/cuda-11.7/bin:/usr/local/cuda/bin:/home/atas/ros2_ws/install/realsense_ros2_camera/bin:/home/atas/ros2_ws/install/ompl/bin:/opt/ros/humble/bin:/home/atas/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin:/home/atas/.dotnet/tools:/home/atas/.local/bin'), ('SESSION_MANAGER', 'local/atas-ZBOX-EN72080V-EN72070V-EN52060V-EN51660T:@/tmp/.ICE-unix/184493,unix/atas-ZBOX-EN72080V-EN72070V-EN52060V-EN51660T:/tmp/.ICE-unix/184493'), ('INVOCATION_ID', '8c8b56a105e74bbba82f6027944f8510'), ('XDG_MENU_PREFIX', 'gnome-'), ('LC_ADDRESS', 'nb_NO.UTF-8'), ('XDG_RUNTIME_DIR', '/run/user/1000'), ('DISPLAY', ':1'), ('TERMINATOR_DBUS_PATH', '/net/tenshu/Terminator2'), ('LANG', 'en_US.UTF-8'), ('XDG_CURRENT_DESKTOP', 'ubuntu:GNOME'), ('DOTNET_BUNDLE_EXTRACT_BASE_DIR', '/home/atas/.cache/dotnet_bundle_extract'), ('IBUS_DISABLE_SNOOPER', '1'), ('LC_TELEPHONE', 'nb_NO.UTF-8'), ('RMW_IMPLEMENTATION', 'rmw_cyclonedds_cpp'), ('XMODIFIERS', '@im=ibus'), ('XDG_SESSION_DESKTOP', 'ubuntu'), ('XAUTHORITY', '/run/user/1000/gdm/Xauthority'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('SSH_AGENT_LAUNCHER', 'gnome-keyring'), ('SSH_AUTH_SOCK', '/run/user/1000/keyring/ssh'), ('AMENT_PREFIX_PATH', '/home/atas/RESEARCH/traversablity_estimation_net/install/traversablity_estimation_net:/home/atas/ros2_ws/install/vox_nav_waypoint_nav_clients:/home/atas/ros2_ws/install/thorvald_vox_nav:/home/atas/ros2_ws/install/robotnik_vox_nav:/home/atas/ros2_ws/install/vox_nav_bringup:/home/atas/ros2_ws/install/vox_nav_planning:/home/atas/ros2_ws/install/vox_nav_navigators:/home/atas/ros2_ws/install/vox_nav_misc:/home/atas/ros2_ws/install/vox_nav_map_server:/home/atas/ros2_ws/install/vox_nav_control:/home/atas/ros2_ws/install/thorvald_gui:/home/atas/ros2_ws/install/vox_nav_utilities:/home/atas/ros2_ws/install/robot_centric_slam:/home/atas/ros2_ws/install/vox_nav_slam_msgs:/home/atas/ros2_ws/install/lidar_apollo_instance_segmentation:/home/atas/ros2_ws/install/vox_nav_msgs:/home/atas/ros2_ws/install/vdb_mapping_ros2:/home/atas/ros2_ws/install/vdb_mapping_interfaces:/home/atas/ros2_ws/install/thorvald_simulator:/home/atas/ros2_ws/install/thorvald_gazebo_plugins:/home/atas/ros2_ws/install/thorvald_example_robots:/home/atas/ros2_ws/install/thorvald:/home/atas/ros2_ws/install/thorvald_bringup:/home/atas/ros2_ws/install/thorvald_base:/home/atas/ros2_ws/install/thorvald_utilities:/home/atas/ros2_ws/install/thorvald_teleop:/home/atas/ros2_ws/install/thorvald_navigation2:/home/atas/ros2_ws/install/thorvald_msgs:/home/atas/ros2_ws/install/thorvald_description:/home/atas/ros2_ws/install/thorvald_can_devices:/home/atas/ros2_ws/install/tensorrt_common:/home/atas/ros2_ws/install/sensor_drivers_bringup:/home/atas/ros2_ws/install/imu_tools:/home/atas/ros2_ws/install/rviz_imu_plugin:/home/atas/ros2_ws/install/robot_localization:/home/atas/ros2_ws/install/realsense_ros2_camera:/home/atas/ros2_ws/install/realsense_camera_msgs:/home/atas/ros2_ws/install/ouster_ros:/home/atas/ros2_ws/install/ouster_msgs:/home/atas/ros2_ws/install/nmea_navsat_driver:/home/atas/ros2_ws/install/lio_sam:/home/atas/ros2_ws/install/kiss_icp:/home/atas/ros2_ws/install/imu_filter_madgwick:/home/atas/ros2_ws/install/imu_complementary_filter:/home/atas/ros2_ws/install/imrt_virtual_joy:/home/atas/ros2_ws/install/imrt_teleop:/home/atas/ros2_ws/install/cuda_utils:/home/atas/ros2_ws/install/bluespace_ai_xsens_mti_driver:/opt/ros/humble'), ('SHELL', '/bin/bash'), ('LC_NAME', 'nb_NO.UTF-8'), ('TERMINATOR_UUID', 'urn:uuid:575fb0ec-dd93-4249-b282-f37767b40709'), ('QT_ACCESSIBILITY', '1'), ('GDMSESSION', 'ubuntu'), ('LESSCLOSE', '/usr/bin/lesspipe %s %s'), ('CMAKE_MODULE_PATH', '/home/atas/ros2_ws/install/vox_nav_control/share/vox_nav_control/cmake:/home/atas/ros2_ws/install/vdb_mapping/lib/cmake/vdb_mapping'), ('LC_MEASUREMENT', 'nb_NO.UTF-8'), ('GPG_AGENT_INFO', '/run/user/1000/gnupg/S.gpg-agent:0:1'), ('LC_IDENTIFICATION', 'nb_NO.UTF-8'), ('QT_IM_MODULE', 'ibus'), ('PWD', '/home/atas/RESEARCH/traversablity_estimation_net/build/traversablity_estimation_net'), ('LC_ALL', 'en_US.UTF-8'), ('XDG_CONFIG_DIRS', '/etc/xdg/xdg-ubuntu:/etc/xdg'), ('XDG_DATA_DIRS', '/usr/share/ubuntu:/usr/share/gnome:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop'), ('PYTHONPATH', '/home/atas/ros2_ws/install/vox_nav_slam_msgs/local/lib/python3.10/dist-packages:/home/atas/ros2_ws/install/vox_nav_msgs/local/lib/python3.10/dist-packages:/home/atas/ros2_ws/install/vdb_mapping_interfaces/local/lib/python3.10/dist-packages:/home/atas/ros2_ws/install/thorvald_msgs/local/lib/python3.10/dist-packages:/home/atas/ros2_ws/install/robot_localization/local/lib/python3.10/dist-packages:/home/atas/ros2_ws/install/realsense_camera_msgs/local/lib/python3.10/dist-packages:/home/atas/ros2_ws/install/ouster_msgs/local/lib/python3.10/dist-packages:/home/atas/ros2_ws/build/nmea_navsat_driver/src:/home/atas/ros2_ws/install/nmea_navsat_driver/lib/python3.10/site-packages:/home/atas/ros2_ws/install/lio_sam/local/lib/python3.10/dist-packages:/home/atas/ros2_ws/build/imrt_virtual_joy:/home/atas/ros2_ws/install/imrt_virtual_joy/lib/python3.10/site-packages:/home/atas/ros2_ws/build/imrt_teleop:/home/atas/ros2_ws/install/imrt_teleop/lib/python3.10/site-packages:/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages'), ('LC_NUMERIC', 'nb_NO.UTF-8'), ('LC_PAPER', 'nb_NO.UTF-8'), ('COLCON', '1'), ('VTE_VERSION', '6800'), ('CMAKE_PREFIX_PATH', '/home/atas/RESEARCH/traversablity_estimation_net/install/traversablity_estimation_net:/home/atas/ros2_ws/install/vox_nav_waypoint_nav_clients:/home/atas/ros2_ws/install/thorvald_vox_nav:/home/atas/ros2_ws/install/robotnik_vox_nav:/home/atas/ros2_ws/install/vox_nav_bringup:/home/atas/ros2_ws/install/vox_nav_planning:/home/atas/ros2_ws/install/vox_nav_navigators:/home/atas/ros2_ws/install/vox_nav_misc:/home/atas/ros2_ws/install/vox_nav_map_server:/home/atas/ros2_ws/install/vox_nav_control:/home/atas/ros2_ws/install/thorvald_gui:/home/atas/ros2_ws/install/vox_nav_utilities:/home/atas/ros2_ws/install/robot_centric_slam:/home/atas/ros2_ws/install/vox_nav_slam_msgs:/home/atas/ros2_ws/install/lidar_apollo_instance_segmentation:/home/atas/ros2_ws/install/vox_nav_msgs:/home/atas/ros2_ws/install/vdb_mapping_ros2:/home/atas/ros2_ws/install/vdb_mapping_interfaces:/home/atas/ros2_ws/install/vdb_mapping:/home/atas/ros2_ws/install/thorvald_simulator:/home/atas/ros2_ws/install/thorvald_gazebo_plugins:/home/atas/ros2_ws/install/thorvald_example_robots:/home/atas/ros2_ws/install/thorvald:/home/atas/ros2_ws/install/thorvald_bringup:/home/atas/ros2_ws/install/thorvald_base:/home/atas/ros2_ws/install/thorvald_utilities:/home/atas/ros2_ws/install/thorvald_teleop:/home/atas/ros2_ws/install/thorvald_navigation2:/home/atas/ros2_ws/install/thorvald_msgs:/home/atas/ros2_ws/install/thorvald_description:/home/atas/ros2_ws/install/thorvald_can_devices:/home/atas/ros2_ws/install/tensorrt_common:/home/atas/ros2_ws/install/nmea_navsat_driver:/home/atas/ros2_ws/install/imrt_virtual_joy:/home/atas/ros2_ws/install/imrt_teleop:/opt/ros/humble:/home/atas/ros2_ws/install/serial:/home/atas/ros2_ws/install/sensor_drivers_bringup:/home/atas/ros2_ws/install/imu_tools:/home/atas/ros2_ws/install/rviz_imu_plugin:/home/atas/ros2_ws/install/robot_localization:/home/atas/ros2_ws/install/realsense_ros2_camera:/home/atas/ros2_ws/install/realsense_camera_msgs:/home/atas/ros2_ws/install/ouster_ros:/home/atas/ros2_ws/install/ouster_msgs:/home/atas/ros2_ws/install/ompl:/home/atas/ros2_ws/install/lio_sam:/home/atas/ros2_ws/install/kiss_icp:/home/atas/ros2_ws/install/imu_filter_madgwick:/home/atas/ros2_ws/install/imu_complementary_filter:/home/atas/ros2_ws/install/fast_gicp:/home/atas/ros2_ws/install/cuda_utils:/home/atas/ros2_ws/install/casadi:/home/atas/ros2_ws/install/bluespace_ai_xsens_mti_driver:/home/atas/ros2_ws/install/ACADO')]), 'shell': False}
+[0.300250] (-) TimerEvent: {}
+[0.400726] (-) TimerEvent: {}
+[0.501117] (-) TimerEvent: {}
+[0.534006] (traversablity_estimation_net) StdoutLine: {'line': b'[ 50%] \x1b[32mBuilding CXX object CMakeFiles/traversablity_smoother_node.dir/src/traversablity_smoother_node.cpp.o\x1b[0m\n'}
+[0.601211] (-) TimerEvent: {}
+[0.701522] (-) TimerEvent: {}
+[0.801855] (-) TimerEvent: {}
+[0.902141] (-) TimerEvent: {}
+[1.002465] (-) TimerEvent: {}
+[1.102806] (-) TimerEvent: {}
+[1.203104] (-) TimerEvent: {}
+[1.303433] (-) TimerEvent: {}
+[1.403828] (-) TimerEvent: {}
+[1.504120] (-) TimerEvent: {}
+[1.604430] (-) TimerEvent: {}
+[1.704730] (-) TimerEvent: {}
+[1.805027] (-) TimerEvent: {}
+[1.905330] (-) TimerEvent: {}
+[2.005642] (-) TimerEvent: {}
+[2.105936] (-) TimerEvent: {}
+[2.206244] (-) TimerEvent: {}
+[2.306600] (-) TimerEvent: {}
+[2.406974] (-) TimerEvent: {}
+[2.507306] (-) TimerEvent: {}
+[2.607606] (-) TimerEvent: {}
+[2.707917] (-) TimerEvent: {}
+[2.808418] (-) TimerEvent: {}
+[2.908902] (-) TimerEvent: {}
+[3.009395] (-) TimerEvent: {}
+[3.109963] (-) TimerEvent: {}
+[3.211512] (-) TimerEvent: {}
+[3.311973] (-) TimerEvent: {}
+[3.412301] (-) TimerEvent: {}
+[3.512654] (-) TimerEvent: {}
+[3.613202] (-) TimerEvent: {}
+[3.713788] (-) TimerEvent: {}
+[3.814232] (-) TimerEvent: {}
+[3.919516] (-) TimerEvent: {}
+[4.019865] (-) TimerEvent: {}
+[4.120288] (-) TimerEvent: {}
+[4.220583] (-) TimerEvent: {}
+[4.321159] (-) TimerEvent: {}
+[4.421602] (-) TimerEvent: {}
+[4.521914] (-) TimerEvent: {}
+[4.622481] (-) TimerEvent: {}
+[4.723083] (-) TimerEvent: {}
+[4.823529] (-) TimerEvent: {}
+[4.924201] (-) TimerEvent: {}
+[5.024735] (-) TimerEvent: {}
+[5.126066] (-) TimerEvent: {}
+[5.226680] (-) TimerEvent: {}
+[5.327003] (-) TimerEvent: {}
+[5.430276] (-) TimerEvent: {}
+[5.530565] (-) TimerEvent: {}
+[5.630844] (-) TimerEvent: {}
+[5.731582] (-) TimerEvent: {}
+[5.832079] (-) TimerEvent: {}
+[5.932412] (-) TimerEvent: {}
+[6.032811] (-) TimerEvent: {}
+[6.133409] (-) TimerEvent: {}
+[6.233898] (-) TimerEvent: {}
+[6.334174] (-) TimerEvent: {}
+[6.434655] (-) TimerEvent: {}
+[6.535261] (-) TimerEvent: {}
+[6.635607] (-) TimerEvent: {}
+[6.736571] (-) TimerEvent: {}
+[6.836917] (-) TimerEvent: {}
+[6.939469] (-) TimerEvent: {}
+[7.040512] (-) TimerEvent: {}
+[7.140825] (-) TimerEvent: {}
+[7.241319] (-) TimerEvent: {}
+[7.341795] (-) TimerEvent: {}
+[7.442275] (-) TimerEvent: {}
+[7.542799] (-) TimerEvent: {}
+[7.643516] (-) TimerEvent: {}
+[7.743812] (-) TimerEvent: {}
+[7.844114] (-) TimerEvent: {}
+[7.944580] (-) TimerEvent: {}
+[8.044905] (-) TimerEvent: {}
+[8.145262] (-) TimerEvent: {}
+[8.245718] (-) TimerEvent: {}
+[8.346021] (-) TimerEvent: {}
+[8.446471] (-) TimerEvent: {}
+[8.547026] (-) TimerEvent: {}
+[8.647462] (-) TimerEvent: {}
+[8.748341] (-) TimerEvent: {}
+[8.849179] (-) TimerEvent: {}
+[8.949728] (-) TimerEvent: {}
+[9.050375] (-) TimerEvent: {}
+[9.150887] (-) TimerEvent: {}
+[9.251345] (-) TimerEvent: {}
+[9.351633] (-) TimerEvent: {}
+[9.452040] (-) TimerEvent: {}
+[9.552694] (-) TimerEvent: {}
+[9.652964] (-) TimerEvent: {}
+[9.753262] (-) TimerEvent: {}
+[9.853586] (-) TimerEvent: {}
+[9.953890] (-) TimerEvent: {}
+[10.054189] (-) TimerEvent: {}
+[10.154549] (-) TimerEvent: {}
+[10.254870] (-) TimerEvent: {}
+[10.355193] (-) TimerEvent: {}
+[10.455559] (-) TimerEvent: {}
+[10.556343] (-) TimerEvent: {}
+[10.658277] (-) TimerEvent: {}
+[10.759362] (-) TimerEvent: {}
+[10.859687] (-) TimerEvent: {}
+[10.960005] (-) TimerEvent: {}
+[11.060336] (-) TimerEvent: {}
+[11.160636] (-) TimerEvent: {}
+[11.260927] (-) TimerEvent: {}
+[11.361378] (-) TimerEvent: {}
+[11.461694] (-) TimerEvent: {}
+[11.561975] (-) TimerEvent: {}
+[11.662267] (-) TimerEvent: {}
+[11.763206] (-) TimerEvent: {}
+[11.863833] (-) TimerEvent: {}
+[11.964111] (-) TimerEvent: {}
+[12.064425] (-) TimerEvent: {}
+[12.164704] (-) TimerEvent: {}
+[12.265138] (-) TimerEvent: {}
+[12.365590] (-) TimerEvent: {}
+[12.466108] (-) TimerEvent: {}
+[12.566418] (-) TimerEvent: {}
+[12.666744] (-) TimerEvent: {}
+[12.767084] (-) TimerEvent: {}
+[12.867546] (-) TimerEvent: {}
+[12.967834] (-) TimerEvent: {}
+[13.068113] (-) TimerEvent: {}
+[13.168563] (-) TimerEvent: {}
+[13.231986] (traversablity_estimation_net) StderrLine: {'line': b'In file included from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/logging.hpp:24\x1b[m\x1b[K,\n'}
+[13.232560] (traversablity_estimation_net) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/client.hpp:40\x1b[m\x1b[K,\n'}
+[13.232690] (traversablity_estimation_net) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/callback_group.hpp:24\x1b[m\x1b[K,\n'}
+[13.232796] (traversablity_estimation_net) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/any_executable.hpp:20\x1b[m\x1b[K,\n'}
+[13.232909] (traversablity_estimation_net) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/memory_strategy.hpp:25\x1b[m\x1b[K,\n'}
+[13.233050] (traversablity_estimation_net) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/memory_strategies.hpp:18\x1b[m\x1b[K,\n'}
+[13.233186] (traversablity_estimation_net) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/executor_options.hpp:20\x1b[m\x1b[K,\n'}
+[13.233286] (traversablity_estimation_net) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/executor.hpp:37\x1b[m\x1b[K,\n'}
+[13.233384] (traversablity_estimation_net) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/executors/multi_threaded_executor.hpp:25\x1b[m\x1b[K,\n'}
+[13.233483] (traversablity_estimation_net) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/executors.hpp:21\x1b[m\x1b[K,\n'}
+[13.233580] (traversablity_estimation_net) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/opt/ros/humble/include/rclcpp/rclcpp/rclcpp.hpp:155\x1b[m\x1b[K,\n'}
+[13.233676] (traversablity_estimation_net) StderrLine: {'line': b'                 from \x1b[01m\x1b[K/home/atas/RESEARCH/traversablity_estimation_net/src/traversablity_smoother_node.cpp:15\x1b[m\x1b[K:\n'}
+[13.233789] (traversablity_estimation_net) StderrLine: {'line': b'\x1b[01m\x1b[K/home/atas/RESEARCH/traversablity_estimation_net/src/traversablity_smoother_node.cpp:\x1b[m\x1b[K In member function \xe2\x80\x98\x1b[01m\x1b[Kvoid vox_nav_misc::traversability_smoother::boxLidarCallback(const ConstSharedPtr&, const ConstSharedPtr&)\x1b[m\x1b[K\xe2\x80\x99:\n'}
+[13.233900] (traversablity_estimation_net) StderrLine: {'line': b'\x1b[01m\x1b[K/home/atas/RESEARCH/traversablity_estimation_net/src/traversablity_smoother_node.cpp:123:29:\x1b[m\x1b[K \x1b[01;35m\x1b[Kwarning: \x1b[m\x1b[Kformat \xe2\x80\x98\x1b[01m\x1b[K%d\x1b[m\x1b[K\xe2\x80\x99 expects argument of type \xe2\x80\x98\x1b[01m\x1b[Kint\x1b[m\x1b[K\xe2\x80\x99, but argument 5 has type \xe2\x80\x98\x1b[01m\x1b[Kstd::vector<vision_msgs::msg::Detection3D_<std::allocator<void> >, std::allocator<vision_msgs::msg::Detection3D_<std::allocator<void> > > >::size_type\x1b[m\x1b[K\xe2\x80\x99 {aka \xe2\x80\x98\x1b[01m\x1b[Klong unsigned int\x1b[m\x1b[K\xe2\x80\x99} [\x1b[01;35m\x1b[K\x1b]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wformat=\x07-Wformat=\x1b]8;;\x07\x1b[m\x1b[K]\n'}
+[13.234011] (traversablity_estimation_net) StderrLine: {'line': b'  123 |   RCLCPP_INFO(get_logger(), \x1b[01;35m\x1b[K"Number of boxes: %d"\x1b[m\x1b[K, \x1b[32m\x1b[Kboxes->detections.size()\x1b[m\x1b[K);\n'}
+[13.234109] (traversablity_estimation_net) StderrLine: {'line': b'      |                             \x1b[01;35m\x1b[K^~~~~~~~~~~~~~~~~~~~~\x1b[m\x1b[K  \x1b[32m\x1b[K~~~~~~~~~~~~~~~~~~~~~~~~\x1b[m\x1b[K\n'}
+[13.234206] (traversablity_estimation_net) StderrLine: {'line': b'      |                                                                          \x1b[32m\x1b[K|\x1b[m\x1b[K\n'}
+[13.234316] (traversablity_estimation_net) StderrLine: {'line': b'      |                                                                          \x1b[32m\x1b[Kstd::vector<vision_msgs::msg::Detection3D_<std::allocator<void> >, std::allocator<vision_msgs::msg::Detection3D_<std::allocator<void> > > >::size_type {aka long unsigned int}\x1b[m\x1b[K\n'}
+[13.234419] (traversablity_estimation_net) StderrLine: {'line': b'\x1b[01m\x1b[K/home/atas/RESEARCH/traversablity_estimation_net/src/traversablity_smoother_node.cpp:123:48:\x1b[m\x1b[K \x1b[01;36m\x1b[Knote: \x1b[m\x1b[Kformat string is defined here\n'}
+[13.234521] (traversablity_estimation_net) StderrLine: {'line': b'  123 |   RCLCPP_INFO(get_logger(), "Number of boxes: \x1b[01;36m\x1b[K%d\x1b[m\x1b[K", boxes->detections.size());\n'}
+[13.234620] (traversablity_estimation_net) StderrLine: {'line': b'      |                                               \x1b[01;36m\x1b[K~^\x1b[m\x1b[K\n'}
+[13.234719] (traversablity_estimation_net) StderrLine: {'line': b'      |                                                \x1b[01;36m\x1b[K|\x1b[m\x1b[K\n'}
+[13.234817] (traversablity_estimation_net) StderrLine: {'line': b'      |                                                \x1b[01;36m\x1b[Kint\x1b[m\x1b[K\n'}
+[13.234915] (traversablity_estimation_net) StderrLine: {'line': b'      |                                               \x1b[32m\x1b[K%ld\x1b[m\x1b[K\n'}
+[13.268669] (-) TimerEvent: {}
+[13.368998] (-) TimerEvent: {}
+[13.469411] (-) TimerEvent: {}
+[13.569701] (-) TimerEvent: {}
+[13.670030] (-) TimerEvent: {}
+[13.770334] (-) TimerEvent: {}
+[13.870819] (-) TimerEvent: {}
+[13.971100] (-) TimerEvent: {}
+[14.071377] (-) TimerEvent: {}
+[14.171837] (-) TimerEvent: {}
+[14.273672] (-) TimerEvent: {}
+[14.374207] (-) TimerEvent: {}
+[14.474532] (-) TimerEvent: {}
+[14.574921] (-) TimerEvent: {}
+[14.675230] (-) TimerEvent: {}
+[14.775758] (-) TimerEvent: {}
+[14.876603] (-) TimerEvent: {}
+[14.977135] (-) TimerEvent: {}
+[15.077632] (-) TimerEvent: {}
+[15.178096] (-) TimerEvent: {}
+[15.278406] (-) TimerEvent: {}
+[15.378713] (-) TimerEvent: {}
+[15.479005] (-) TimerEvent: {}
+[15.579358] (-) TimerEvent: {}
+[15.685210] (-) TimerEvent: {}
+[15.787084] (-) TimerEvent: {}
+[15.887416] (-) TimerEvent: {}
+[15.987695] (-) TimerEvent: {}
+[16.087998] (-) TimerEvent: {}
+[16.190357] (-) TimerEvent: {}
+[16.291444] (-) TimerEvent: {}
+[16.391737] (-) TimerEvent: {}
+[16.492056] (-) TimerEvent: {}
+[16.592359] (-) TimerEvent: {}
+[16.692633] (-) TimerEvent: {}
+[16.792952] (-) TimerEvent: {}
+[16.893444] (-) TimerEvent: {}
+[16.993980] (-) TimerEvent: {}
+[17.094667] (-) TimerEvent: {}
+[17.194963] (-) TimerEvent: {}
+[17.295229] (-) TimerEvent: {}
+[17.395552] (-) TimerEvent: {}
+[17.496009] (-) TimerEvent: {}
+[17.596472] (-) TimerEvent: {}
+[17.696781] (-) TimerEvent: {}
+[17.797250] (-) TimerEvent: {}
+[17.897557] (-) TimerEvent: {}
+[17.998000] (-) TimerEvent: {}
+[18.098585] (-) TimerEvent: {}
+[18.199033] (-) TimerEvent: {}
+[18.299578] (-) TimerEvent: {}
+[18.400039] (-) TimerEvent: {}
+[18.500518] (-) TimerEvent: {}
+[18.601048] (-) TimerEvent: {}
+[18.701493] (-) TimerEvent: {}
+[18.802040] (-) TimerEvent: {}
+[18.902375] (-) TimerEvent: {}
+[19.002639] (-) TimerEvent: {}
+[19.102925] (-) TimerEvent: {}
+[19.203220] (-) TimerEvent: {}
+[19.303520] (-) TimerEvent: {}
+[19.403840] (-) TimerEvent: {}
+[19.504233] (-) TimerEvent: {}
+[19.604741] (-) TimerEvent: {}
+[19.705451] (-) TimerEvent: {}
+[19.805945] (-) TimerEvent: {}
+[19.906269] (-) TimerEvent: {}
+[20.006596] (-) TimerEvent: {}
+[20.109863] (-) TimerEvent: {}
+[20.210512] (-) TimerEvent: {}
+[20.310811] (-) TimerEvent: {}
+[20.411099] (-) TimerEvent: {}
+[20.511410] (-) TimerEvent: {}
+[20.611790] (-) TimerEvent: {}
+[20.712220] (-) TimerEvent: {}
+[20.812691] (-) TimerEvent: {}
+[20.913469] (-) TimerEvent: {}
+[21.013937] (-) TimerEvent: {}
+[21.114429] (-) TimerEvent: {}
+[21.214867] (-) TimerEvent: {}
+[21.315663] (-) TimerEvent: {}
+[21.415952] (-) TimerEvent: {}
+[21.516259] (-) TimerEvent: {}
+[21.616599] (-) TimerEvent: {}
+[21.716943] (-) TimerEvent: {}
+[21.817250] (-) TimerEvent: {}
+[21.917590] (-) TimerEvent: {}
+[22.017915] (-) TimerEvent: {}
+[22.118403] (-) TimerEvent: {}
+[22.218826] (-) TimerEvent: {}
+[22.319282] (-) TimerEvent: {}
+[22.419709] (-) TimerEvent: {}
+[22.520012] (-) TimerEvent: {}
+[22.620345] (-) TimerEvent: {}
+[22.720640] (-) TimerEvent: {}
+[22.820933] (-) TimerEvent: {}
+[22.921235] (-) TimerEvent: {}
+[23.021542] (-) TimerEvent: {}
+[23.121835] (-) TimerEvent: {}
+[23.222133] (-) TimerEvent: {}
+[23.322431] (-) TimerEvent: {}
+[23.422904] (-) TimerEvent: {}
+[23.523248] (-) TimerEvent: {}
+[23.623518] (-) TimerEvent: {}
+[23.723803] (-) TimerEvent: {}
+[23.824066] (-) TimerEvent: {}
+[23.924336] (-) TimerEvent: {}
+[24.024668] (-) TimerEvent: {}
+[24.125191] (-) TimerEvent: {}
+[24.225708] (-) TimerEvent: {}
+[24.326146] (-) TimerEvent: {}
+[24.426463] (-) TimerEvent: {}
+[24.526760] (-) TimerEvent: {}
+[24.627040] (-) TimerEvent: {}
+[24.727684] (-) TimerEvent: {}
+[24.827974] (-) TimerEvent: {}
+[24.928245] (-) TimerEvent: {}
+[25.028509] (-) TimerEvent: {}
+[25.129701] (-) TimerEvent: {}
+[25.229995] (-) TimerEvent: {}
+[25.330638] (-) TimerEvent: {}
+[25.430967] (-) TimerEvent: {}
+[25.531342] (-) TimerEvent: {}
+[25.631824] (-) TimerEvent: {}
+[25.733151] (-) TimerEvent: {}
+[25.833458] (-) TimerEvent: {}
+[25.933779] (-) TimerEvent: {}
+[26.034277] (-) TimerEvent: {}
+[26.135549] (-) TimerEvent: {}
+[26.235890] (-) TimerEvent: {}
+[26.336375] (-) TimerEvent: {}
+[26.436853] (-) TimerEvent: {}
+[26.537317] (-) TimerEvent: {}
+[26.638833] (-) TimerEvent: {}
+[26.743528] (-) TimerEvent: {}
+[26.844362] (-) TimerEvent: {}
+[26.944660] (-) TimerEvent: {}
+[27.045340] (-) TimerEvent: {}
+[27.146035] (-) TimerEvent: {}
+[27.248299] (-) TimerEvent: {}
+[27.348772] (-) TimerEvent: {}
+[27.449115] (-) TimerEvent: {}
+[27.549434] (-) TimerEvent: {}
+[27.649761] (-) TimerEvent: {}
+[27.750032] (-) TimerEvent: {}
+[27.850540] (-) TimerEvent: {}
+[27.950989] (-) TimerEvent: {}
+[28.051529] (-) TimerEvent: {}
+[28.151781] (-) TimerEvent: {}
+[28.252074] (-) TimerEvent: {}
+[28.352531] (-) TimerEvent: {}
+[28.452844] (-) TimerEvent: {}
+[28.553136] (-) TimerEvent: {}
+[28.653436] (-) TimerEvent: {}
+[28.754221] (-) TimerEvent: {}
+[28.854523] (-) TimerEvent: {}
+[28.954813] (-) TimerEvent: {}
+[29.055107] (-) TimerEvent: {}
+[29.155820] (-) TimerEvent: {}
+[29.256453] (-) TimerEvent: {}
+[29.356750] (-) TimerEvent: {}
+[29.457224] (-) TimerEvent: {}
+[29.557674] (-) TimerEvent: {}
+[29.658082] (-) TimerEvent: {}
+[29.760155] (-) TimerEvent: {}
+[29.860640] (-) TimerEvent: {}
+[29.961109] (-) TimerEvent: {}
+[30.061435] (-) TimerEvent: {}
+[30.161921] (-) TimerEvent: {}
+[30.262401] (-) TimerEvent: {}
+[30.362883] (-) TimerEvent: {}
+[30.463289] (-) TimerEvent: {}
+[30.563608] (-) TimerEvent: {}
+[30.664168] (-) TimerEvent: {}
+[30.764458] (-) TimerEvent: {}
+[30.864750] (-) TimerEvent: {}
+[30.965340] (-) TimerEvent: {}
+[31.065620] (-) TimerEvent: {}
+[31.167341] (-) TimerEvent: {}
+[31.267919] (-) TimerEvent: {}
+[31.368346] (-) TimerEvent: {}
+[31.469000] (-) TimerEvent: {}
+[31.571005] (-) TimerEvent: {}
+[31.671294] (-) TimerEvent: {}
+[31.771661] (-) TimerEvent: {}
+[31.872333] (-) TimerEvent: {}
+[31.972652] (-) TimerEvent: {}
+[32.072980] (-) TimerEvent: {}
+[32.173272] (-) TimerEvent: {}
+[32.273561] (-) TimerEvent: {}
+[32.373900] (-) TimerEvent: {}
+[32.474217] (-) TimerEvent: {}
+[32.575120] (-) TimerEvent: {}
+[32.675670] (-) TimerEvent: {}
+[32.783599] (-) TimerEvent: {}
+[32.883933] (-) TimerEvent: {}
+[32.984225] (-) TimerEvent: {}
+[33.084625] (-) TimerEvent: {}
+[33.184956] (-) TimerEvent: {}
+[33.285321] (-) TimerEvent: {}
+[33.385638] (-) TimerEvent: {}
+[33.486281] (-) TimerEvent: {}
+[33.586598] (-) TimerEvent: {}
+[33.686884] (-) TimerEvent: {}
+[33.787492] (-) TimerEvent: {}
+[33.887979] (-) TimerEvent: {}
+[33.988286] (-) TimerEvent: {}
+[34.088628] (-) TimerEvent: {}
+[34.188937] (-) TimerEvent: {}
+[34.289223] (-) TimerEvent: {}
+[34.389807] (-) TimerEvent: {}
+[34.490086] (-) TimerEvent: {}
+[34.590584] (-) TimerEvent: {}
+[34.690836] (-) TimerEvent: {}
+[34.791133] (-) TimerEvent: {}
+[34.891434] (-) TimerEvent: {}
+[34.991962] (-) TimerEvent: {}
+[35.092262] (-) TimerEvent: {}
+[35.192582] (-) TimerEvent: {}
+[35.292945] (-) TimerEvent: {}
+[35.393233] (-) TimerEvent: {}
+[35.493725] (-) TimerEvent: {}
+[35.594033] (-) TimerEvent: {}
+[35.695379] (-) TimerEvent: {}
+[35.795850] (-) TimerEvent: {}
+[35.896475] (-) TimerEvent: {}
+[35.996740] (-) TimerEvent: {}
+[36.097033] (-) TimerEvent: {}
+[36.197355] (-) TimerEvent: {}
+[36.297669] (-) TimerEvent: {}
+[36.397969] (-) TimerEvent: {}
+[36.498290] (-) TimerEvent: {}
+[36.598570] (-) TimerEvent: {}
+[36.698891] (-) TimerEvent: {}
+[36.799209] (-) TimerEvent: {}
+[36.899509] (-) TimerEvent: {}
+[36.999821] (-) TimerEvent: {}
+[37.100240] (-) TimerEvent: {}
+[37.201663] (-) TimerEvent: {}
+[37.301941] (-) TimerEvent: {}
+[37.402408] (-) TimerEvent: {}
+[37.502724] (-) TimerEvent: {}
+[37.603070] (-) TimerEvent: {}
+[37.703435] (-) TimerEvent: {}
+[37.803751] (-) TimerEvent: {}
+[37.904065] (-) TimerEvent: {}
+[38.004367] (-) TimerEvent: {}
+[38.111520] (-) TimerEvent: {}
+[38.212563] (-) TimerEvent: {}
+[38.312888] (-) TimerEvent: {}
+[38.413150] (-) TimerEvent: {}
+[38.513453] (-) TimerEvent: {}
+[38.614317] (-) TimerEvent: {}
+[38.714861] (-) TimerEvent: {}
+[38.815147] (-) TimerEvent: {}
+[38.915484] (-) TimerEvent: {}
+[39.015768] (-) TimerEvent: {}
+[39.116078] (-) TimerEvent: {}
+[39.216448] (-) TimerEvent: {}
+[39.316729] (-) TimerEvent: {}
+[39.417037] (-) TimerEvent: {}
+[39.517314] (-) TimerEvent: {}
+[39.617624] (-) TimerEvent: {}
+[39.718210] (-) TimerEvent: {}
+[39.818580] (-) TimerEvent: {}
+[39.918897] (-) TimerEvent: {}
+[40.019441] (-) TimerEvent: {}
+[40.120431] (-) TimerEvent: {}
+[40.220769] (-) TimerEvent: {}
+[40.321082] (-) TimerEvent: {}
+[40.421733] (-) TimerEvent: {}
+[40.526175] (-) TimerEvent: {}
+[40.628012] (-) TimerEvent: {}
+[40.728370] (-) TimerEvent: {}
+[40.829193] (-) TimerEvent: {}
+[40.929477] (-) TimerEvent: {}
+[41.029820] (-) TimerEvent: {}
+[41.130317] (-) TimerEvent: {}
+[41.230615] (-) TimerEvent: {}
+[41.330973] (-) TimerEvent: {}
+[41.431488] (-) TimerEvent: {}
+[41.531799] (-) TimerEvent: {}
+[41.632148] (-) TimerEvent: {}
+[41.732469] (-) TimerEvent: {}
+[41.832820] (-) TimerEvent: {}
+[41.933122] (-) TimerEvent: {}
+[42.033438] (-) TimerEvent: {}
+[42.134143] (-) TimerEvent: {}
+[42.234792] (-) TimerEvent: {}
+[42.335127] (-) TimerEvent: {}
+[42.438294] (-) TimerEvent: {}
+[42.538647] (-) TimerEvent: {}
+[42.638992] (-) TimerEvent: {}
+[42.739302] (-) TimerEvent: {}
+[42.839621] (-) TimerEvent: {}
+[42.939937] (-) TimerEvent: {}
+[43.040205] (-) TimerEvent: {}
+[43.140500] (-) TimerEvent: {}
+[43.241026] (-) TimerEvent: {}
+[43.341303] (-) TimerEvent: {}
+[43.441790] (-) TimerEvent: {}
+[43.542125] (-) TimerEvent: {}
+[43.642446] (-) TimerEvent: {}
+[43.742917] (-) TimerEvent: {}
+[43.843395] (-) TimerEvent: {}
+[43.943775] (-) TimerEvent: {}
+[44.044160] (-) TimerEvent: {}
+[44.144478] (-) TimerEvent: {}
+[44.244766] (-) TimerEvent: {}
+[44.345070] (-) TimerEvent: {}
+[44.445416] (-) TimerEvent: {}
+[44.545802] (-) TimerEvent: {}
+[44.646110] (-) TimerEvent: {}
+[44.746828] (-) TimerEvent: {}
+[44.847113] (-) TimerEvent: {}
+[44.947409] (-) TimerEvent: {}
+[45.047729] (-) TimerEvent: {}
+[45.148922] (-) TimerEvent: {}
+[45.249585] (-) TimerEvent: {}
+[45.349907] (-) TimerEvent: {}
+[45.450233] (-) TimerEvent: {}
+[45.551006] (-) TimerEvent: {}
+[45.567585] (traversablity_estimation_net) StdoutLine: {'line': b'[100%] \x1b[32m\x1b[1mLinking CXX executable traversablity_smoother_node\x1b[0m\n'}
+[45.651532] (-) TimerEvent: {}
+[45.751864] (-) TimerEvent: {}
+[45.852340] (-) TimerEvent: {}
+[45.952676] (-) TimerEvent: {}
+[46.053689] (-) TimerEvent: {}
+[46.154081] (-) TimerEvent: {}
+[46.254449] (-) TimerEvent: {}
+[46.354775] (-) TimerEvent: {}
+[46.455673] (-) TimerEvent: {}
+[46.556005] (-) TimerEvent: {}
+[46.656489] (-) TimerEvent: {}
+[46.761298] (-) TimerEvent: {}
+[46.861589] (-) TimerEvent: {}
+[46.961936] (-) TimerEvent: {}
+[47.062235] (-) TimerEvent: {}
+[47.162569] (-) TimerEvent: {}
+[47.217598] (traversablity_estimation_net) StdoutLine: {'line': b'[100%] Built target traversablity_smoother_node\n'}
+[47.233853] (traversablity_estimation_net) CommandEnded: {'returncode': 0}
+[47.262667] (-) TimerEvent: {}
+[47.362966] (-) TimerEvent: {}
+[47.399862] (traversablity_estimation_net) JobProgress: {'identifier': 'traversablity_estimation_net', 'progress': 'install'}
+[47.463066] (-) TimerEvent: {}
+[47.497177] (traversablity_estimation_net) Command: {'cmd': ['/usr/local/bin/cmake', '--install', '/home/atas/RESEARCH/traversablity_estimation_net/build/traversablity_estimation_net'], 'cwd': '/home/atas/RESEARCH/traversablity_estimation_net/build/traversablity_estimation_net', 'env': OrderedDict([('LESSOPEN', '| /usr/bin/lesspipe %s'), ('USER', 'atas'), ('LC_TIME', 'nb_NO.UTF-8'), ('ROS_PACKAGE_PATH', '/home/atas/ros2_ws/install/serial/share:/home/atas/ros2_ws/install/fast_gicp/share'), ('XDG_SESSION_TYPE', 'x11'), ('SHLVL', '1'), ('LD_LIBRARY_PATH', '/home/atas/Downloads/TensorRT-8.4.1.5/targets/x86_64-linux-gnu/lib:/usr/local/cuda-11.7/lib64:/usr/local/cuda/lib64:/home/atas/ros2_ws/install/vox_nav_planning/lib:/home/atas/ros2_ws/install/vox_nav_navigators/lib:/home/atas/ros2_ws/install/vox_nav_control/lib:/home/atas/ros2_ws/install/thorvald_gui/lib:/home/atas/ros2_ws/install/vox_nav_utilities/lib:/home/atas/ros2_ws/install/robot_centric_slam/lib:/home/atas/ros2_ws/install/vox_nav_slam_msgs/lib:/home/atas/ros2_ws/install/vox_nav_msgs/lib:/home/atas/ros2_ws/install/vdb_mapping_interfaces/lib:/home/atas/ros2_ws/install/vdb_mapping/lib:/home/atas/ros2_ws/install/thorvald_gazebo_plugins/lib:/home/atas/ros2_ws/install/thorvald_base/lib:/home/atas/ros2_ws/install/thorvald_utilities/lib:/home/atas/ros2_ws/install/thorvald_msgs/lib:/home/atas/ros2_ws/install/thorvald_can_devices/lib:/home/atas/ros2_ws/install/tensorrt_common/lib:/home/atas/ros2_ws/install/sensor_drivers_bringup/lib:/home/atas/ros2_ws/install/rviz_imu_plugin/lib:/home/atas/ros2_ws/install/robot_localization/lib:/home/atas/ros2_ws/install/realsense_camera_msgs/lib:/home/atas/ros2_ws/install/ouster_ros/lib:/home/atas/ros2_ws/install/ouster_msgs/lib:/home/atas/ros2_ws/install/ompl/lib:/home/atas/ros2_ws/install/lio_sam/lib:/home/atas/ros2_ws/install/kiss_icp/lib:/home/atas/ros2_ws/install/imu_filter_madgwick/lib:/home/atas/ros2_ws/install/imu_complementary_filter/lib:/home/atas/ros2_ws/install/fast_gicp/lib:/home/atas/ros2_ws/install/casadi/lib:/home/atas/ros2_ws/install/ACADO/lib:/usr/lib/x86_64-linux-gnu/gazebo-11/plugins:/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib'), ('HOME', '/home/atas'), ('OLDPWD', '/home/atas/RESEARCH'), ('DESKTOP_SESSION', 'ubuntu'), ('ROS_PYTHON_VERSION', '3'), ('GNOME_SHELL_SESSION_MODE', 'ubuntu'), ('GTK_MODULES', 'gail:atk-bridge'), ('LC_MONETARY', 'nb_NO.UTF-8'), ('MANAGERPID', '184163'), ('SYSTEMD_EXEC_PID', '184717'), ('DBUS_SESSION_BUS_ADDRESS', 'unix:path=/run/user/1000/bus'), ('COLORTERM', 'truecolor'), ('TERMINATOR_DBUS_NAME', 'net.tenshu.Terminator23558193cd9818af7fe4d2c2f5bd9d00f'), ('GIO_LAUNCHED_DESKTOP_FILE_PID', '194061'), ('MANDATORY_PATH', '/usr/share/gconf/ubuntu.mandatory.path'), ('IM_CONFIG_PHASE', '1'), ('COLCON_PREFIX_PATH', '/home/atas/RESEARCH/traversablity_estimation_net/install:/home/atas/ros2_ws/install'), ('ROS_DISTRO', 'humble'), ('GTK_IM_MODULE', 'ibus'), ('LOGNAME', 'atas'), ('JOURNAL_STREAM', '8:4419609'), ('_', '/usr/bin/colcon'), ('ROS_VERSION', '2'), ('PKG_CONFIG_PATH', '/home/atas/ros2_ws/install/vdb_mapping/lib/x86_64-linux-gnu/pkgconfig:/home/atas/ros2_ws/install/vdb_mapping/lib/pkgconfig:/home/atas/ros2_ws/install/serial/lib/x86_64-linux-gnu/pkgconfig:/home/atas/ros2_ws/install/serial/lib/pkgconfig:/home/atas/ros2_ws/install/ompl/lib/x86_64-linux-gnu/pkgconfig:/home/atas/ros2_ws/install/ompl/lib/pkgconfig:/home/atas/ros2_ws/install/fast_gicp/lib/x86_64-linux-gnu/pkgconfig:/home/atas/ros2_ws/install/fast_gicp/lib/pkgconfig:/home/atas/ros2_ws/install/casadi/lib/pkgconfig'), ('XDG_SESSION_CLASS', 'user'), ('DEFAULTS_PATH', '/usr/share/gconf/ubuntu.default.path'), ('USERNAME', 'atas'), ('TERM', 'xterm-256color'), ('GNOME_DESKTOP_SESSION_ID', 'this-is-deprecated'), ('ROS_LOCALHOST_ONLY', '0'), ('WINDOWPATH', '2'), ('PATH', '/usr/local/cuda-11.7/bin:/usr/local/cuda/bin:/home/atas/ros2_ws/install/realsense_ros2_camera/bin:/home/atas/ros2_ws/install/ompl/bin:/opt/ros/humble/bin:/home/atas/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin:/home/atas/.dotnet/tools:/home/atas/.local/bin'), ('SESSION_MANAGER', 'local/atas-ZBOX-EN72080V-EN72070V-EN52060V-EN51660T:@/tmp/.ICE-unix/184493,unix/atas-ZBOX-EN72080V-EN72070V-EN52060V-EN51660T:/tmp/.ICE-unix/184493'), ('INVOCATION_ID', '8c8b56a105e74bbba82f6027944f8510'), ('XDG_MENU_PREFIX', 'gnome-'), ('LC_ADDRESS', 'nb_NO.UTF-8'), ('XDG_RUNTIME_DIR', '/run/user/1000'), ('DISPLAY', ':1'), ('TERMINATOR_DBUS_PATH', '/net/tenshu/Terminator2'), ('LANG', 'en_US.UTF-8'), ('XDG_CURRENT_DESKTOP', 'ubuntu:GNOME'), ('DOTNET_BUNDLE_EXTRACT_BASE_DIR', '/home/atas/.cache/dotnet_bundle_extract'), ('IBUS_DISABLE_SNOOPER', '1'), ('LC_TELEPHONE', 'nb_NO.UTF-8'), ('RMW_IMPLEMENTATION', 'rmw_cyclonedds_cpp'), ('XMODIFIERS', '@im=ibus'), ('XDG_SESSION_DESKTOP', 'ubuntu'), ('XAUTHORITY', '/run/user/1000/gdm/Xauthority'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('SSH_AGENT_LAUNCHER', 'gnome-keyring'), ('SSH_AUTH_SOCK', '/run/user/1000/keyring/ssh'), ('AMENT_PREFIX_PATH', '/home/atas/RESEARCH/traversablity_estimation_net/install/traversablity_estimation_net:/home/atas/ros2_ws/install/vox_nav_waypoint_nav_clients:/home/atas/ros2_ws/install/thorvald_vox_nav:/home/atas/ros2_ws/install/robotnik_vox_nav:/home/atas/ros2_ws/install/vox_nav_bringup:/home/atas/ros2_ws/install/vox_nav_planning:/home/atas/ros2_ws/install/vox_nav_navigators:/home/atas/ros2_ws/install/vox_nav_misc:/home/atas/ros2_ws/install/vox_nav_map_server:/home/atas/ros2_ws/install/vox_nav_control:/home/atas/ros2_ws/install/thorvald_gui:/home/atas/ros2_ws/install/vox_nav_utilities:/home/atas/ros2_ws/install/robot_centric_slam:/home/atas/ros2_ws/install/vox_nav_slam_msgs:/home/atas/ros2_ws/install/lidar_apollo_instance_segmentation:/home/atas/ros2_ws/install/vox_nav_msgs:/home/atas/ros2_ws/install/vdb_mapping_ros2:/home/atas/ros2_ws/install/vdb_mapping_interfaces:/home/atas/ros2_ws/install/thorvald_simulator:/home/atas/ros2_ws/install/thorvald_gazebo_plugins:/home/atas/ros2_ws/install/thorvald_example_robots:/home/atas/ros2_ws/install/thorvald:/home/atas/ros2_ws/install/thorvald_bringup:/home/atas/ros2_ws/install/thorvald_base:/home/atas/ros2_ws/install/thorvald_utilities:/home/atas/ros2_ws/install/thorvald_teleop:/home/atas/ros2_ws/install/thorvald_navigation2:/home/atas/ros2_ws/install/thorvald_msgs:/home/atas/ros2_ws/install/thorvald_description:/home/atas/ros2_ws/install/thorvald_can_devices:/home/atas/ros2_ws/install/tensorrt_common:/home/atas/ros2_ws/install/sensor_drivers_bringup:/home/atas/ros2_ws/install/imu_tools:/home/atas/ros2_ws/install/rviz_imu_plugin:/home/atas/ros2_ws/install/robot_localization:/home/atas/ros2_ws/install/realsense_ros2_camera:/home/atas/ros2_ws/install/realsense_camera_msgs:/home/atas/ros2_ws/install/ouster_ros:/home/atas/ros2_ws/install/ouster_msgs:/home/atas/ros2_ws/install/nmea_navsat_driver:/home/atas/ros2_ws/install/lio_sam:/home/atas/ros2_ws/install/kiss_icp:/home/atas/ros2_ws/install/imu_filter_madgwick:/home/atas/ros2_ws/install/imu_complementary_filter:/home/atas/ros2_ws/install/imrt_virtual_joy:/home/atas/ros2_ws/install/imrt_teleop:/home/atas/ros2_ws/install/cuda_utils:/home/atas/ros2_ws/install/bluespace_ai_xsens_mti_driver:/opt/ros/humble'), ('SHELL', '/bin/bash'), ('LC_NAME', 'nb_NO.UTF-8'), ('TERMINATOR_UUID', 'urn:uuid:575fb0ec-dd93-4249-b282-f37767b40709'), ('QT_ACCESSIBILITY', '1'), ('GDMSESSION', 'ubuntu'), ('LESSCLOSE', '/usr/bin/lesspipe %s %s'), ('CMAKE_MODULE_PATH', '/home/atas/ros2_ws/install/vox_nav_control/share/vox_nav_control/cmake:/home/atas/ros2_ws/install/vdb_mapping/lib/cmake/vdb_mapping'), ('LC_MEASUREMENT', 'nb_NO.UTF-8'), ('GPG_AGENT_INFO', '/run/user/1000/gnupg/S.gpg-agent:0:1'), ('LC_IDENTIFICATION', 'nb_NO.UTF-8'), ('QT_IM_MODULE', 'ibus'), ('PWD', '/home/atas/RESEARCH/traversablity_estimation_net/build/traversablity_estimation_net'), ('LC_ALL', 'en_US.UTF-8'), ('XDG_CONFIG_DIRS', '/etc/xdg/xdg-ubuntu:/etc/xdg'), ('XDG_DATA_DIRS', '/usr/share/ubuntu:/usr/share/gnome:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop'), ('PYTHONPATH', '/home/atas/ros2_ws/install/vox_nav_slam_msgs/local/lib/python3.10/dist-packages:/home/atas/ros2_ws/install/vox_nav_msgs/local/lib/python3.10/dist-packages:/home/atas/ros2_ws/install/vdb_mapping_interfaces/local/lib/python3.10/dist-packages:/home/atas/ros2_ws/install/thorvald_msgs/local/lib/python3.10/dist-packages:/home/atas/ros2_ws/install/robot_localization/local/lib/python3.10/dist-packages:/home/atas/ros2_ws/install/realsense_camera_msgs/local/lib/python3.10/dist-packages:/home/atas/ros2_ws/install/ouster_msgs/local/lib/python3.10/dist-packages:/home/atas/ros2_ws/build/nmea_navsat_driver/src:/home/atas/ros2_ws/install/nmea_navsat_driver/lib/python3.10/site-packages:/home/atas/ros2_ws/install/lio_sam/local/lib/python3.10/dist-packages:/home/atas/ros2_ws/build/imrt_virtual_joy:/home/atas/ros2_ws/install/imrt_virtual_joy/lib/python3.10/site-packages:/home/atas/ros2_ws/build/imrt_teleop:/home/atas/ros2_ws/install/imrt_teleop/lib/python3.10/site-packages:/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages'), ('LC_NUMERIC', 'nb_NO.UTF-8'), ('LC_PAPER', 'nb_NO.UTF-8'), ('COLCON', '1'), ('VTE_VERSION', '6800'), ('CMAKE_PREFIX_PATH', '/home/atas/RESEARCH/traversablity_estimation_net/install/traversablity_estimation_net:/home/atas/ros2_ws/install/vox_nav_waypoint_nav_clients:/home/atas/ros2_ws/install/thorvald_vox_nav:/home/atas/ros2_ws/install/robotnik_vox_nav:/home/atas/ros2_ws/install/vox_nav_bringup:/home/atas/ros2_ws/install/vox_nav_planning:/home/atas/ros2_ws/install/vox_nav_navigators:/home/atas/ros2_ws/install/vox_nav_misc:/home/atas/ros2_ws/install/vox_nav_map_server:/home/atas/ros2_ws/install/vox_nav_control:/home/atas/ros2_ws/install/thorvald_gui:/home/atas/ros2_ws/install/vox_nav_utilities:/home/atas/ros2_ws/install/robot_centric_slam:/home/atas/ros2_ws/install/vox_nav_slam_msgs:/home/atas/ros2_ws/install/lidar_apollo_instance_segmentation:/home/atas/ros2_ws/install/vox_nav_msgs:/home/atas/ros2_ws/install/vdb_mapping_ros2:/home/atas/ros2_ws/install/vdb_mapping_interfaces:/home/atas/ros2_ws/install/vdb_mapping:/home/atas/ros2_ws/install/thorvald_simulator:/home/atas/ros2_ws/install/thorvald_gazebo_plugins:/home/atas/ros2_ws/install/thorvald_example_robots:/home/atas/ros2_ws/install/thorvald:/home/atas/ros2_ws/install/thorvald_bringup:/home/atas/ros2_ws/install/thorvald_base:/home/atas/ros2_ws/install/thorvald_utilities:/home/atas/ros2_ws/install/thorvald_teleop:/home/atas/ros2_ws/install/thorvald_navigation2:/home/atas/ros2_ws/install/thorvald_msgs:/home/atas/ros2_ws/install/thorvald_description:/home/atas/ros2_ws/install/thorvald_can_devices:/home/atas/ros2_ws/install/tensorrt_common:/home/atas/ros2_ws/install/nmea_navsat_driver:/home/atas/ros2_ws/install/imrt_virtual_joy:/home/atas/ros2_ws/install/imrt_teleop:/opt/ros/humble:/home/atas/ros2_ws/install/serial:/home/atas/ros2_ws/install/sensor_drivers_bringup:/home/atas/ros2_ws/install/imu_tools:/home/atas/ros2_ws/install/rviz_imu_plugin:/home/atas/ros2_ws/install/robot_localization:/home/atas/ros2_ws/install/realsense_ros2_camera:/home/atas/ros2_ws/install/realsense_camera_msgs:/home/atas/ros2_ws/install/ouster_ros:/home/atas/ros2_ws/install/ouster_msgs:/home/atas/ros2_ws/install/ompl:/home/atas/ros2_ws/install/lio_sam:/home/atas/ros2_ws/install/kiss_icp:/home/atas/ros2_ws/install/imu_filter_madgwick:/home/atas/ros2_ws/install/imu_complementary_filter:/home/atas/ros2_ws/install/fast_gicp:/home/atas/ros2_ws/install/cuda_utils:/home/atas/ros2_ws/install/casadi:/home/atas/ros2_ws/install/bluespace_ai_xsens_mti_driver:/home/atas/ros2_ws/install/ACADO')]), 'shell': False}
+[47.563153] (-) TimerEvent: {}
+[47.586825] (traversablity_estimation_net) StdoutLine: {'line': b'-- Install configuration: "Release"\n'}
+[47.588550] (traversablity_estimation_net) StdoutLine: {'line': b'-- Execute custom install script\n'}
+[47.591190] (traversablity_estimation_net) StdoutLine: {'line': b'-- Up-to-date symlink: /home/atas/RESEARCH/traversablity_estimation_net/install/traversablity_estimation_net/lib/traversablity_estimation_net/traversablity_smoother_node\n'}
+[47.591643] (traversablity_estimation_net) StdoutLine: {'line': b'-- Up-to-date symlink: /home/atas/RESEARCH/traversablity_estimation_net/install/traversablity_estimation_net/share/traversablity_estimation_net/launch/traversablity_smoother_node.launch.py\n'}
+[47.592173] (traversablity_estimation_net) StdoutLine: {'line': b'-- Up-to-date symlink: /home/atas/RESEARCH/traversablity_estimation_net/install/traversablity_estimation_net/share/ament_index/resource_index/package_run_dependencies/traversablity_estimation_net\n'}
+[47.592663] (traversablity_estimation_net) StdoutLine: {'line': b'-- Up-to-date symlink: /home/atas/RESEARCH/traversablity_estimation_net/install/traversablity_estimation_net/share/ament_index/resource_index/parent_prefix_path/traversablity_estimation_net\n'}
+[47.593022] (traversablity_estimation_net) StdoutLine: {'line': b'-- Up-to-date symlink: /home/atas/RESEARCH/traversablity_estimation_net/install/traversablity_estimation_net/share/traversablity_estimation_net/environment/ament_prefix_path.sh\n'}
+[47.593517] (traversablity_estimation_net) StdoutLine: {'line': b'-- Up-to-date symlink: /home/atas/RESEARCH/traversablity_estimation_net/install/traversablity_estimation_net/share/traversablity_estimation_net/environment/ament_prefix_path.dsv\n'}
+[47.593836] (traversablity_estimation_net) StdoutLine: {'line': b'-- Up-to-date symlink: /home/atas/RESEARCH/traversablity_estimation_net/install/traversablity_estimation_net/share/traversablity_estimation_net/environment/path.sh\n'}
+[47.594145] (traversablity_estimation_net) StdoutLine: {'line': b'-- Up-to-date symlink: /home/atas/RESEARCH/traversablity_estimation_net/install/traversablity_estimation_net/share/traversablity_estimation_net/environment/path.dsv\n'}
+[47.594801] (traversablity_estimation_net) StdoutLine: {'line': b'-- Up-to-date symlink: /home/atas/RESEARCH/traversablity_estimation_net/install/traversablity_estimation_net/share/traversablity_estimation_net/local_setup.bash\n'}
+[47.594984] (traversablity_estimation_net) StdoutLine: {'line': b'-- Up-to-date symlink: /home/atas/RESEARCH/traversablity_estimation_net/install/traversablity_estimation_net/share/traversablity_estimation_net/local_setup.sh\n'}
+[47.595314] (traversablity_estimation_net) StdoutLine: {'line': b'-- Up-to-date symlink: /home/atas/RESEARCH/traversablity_estimation_net/install/traversablity_estimation_net/share/traversablity_estimation_net/local_setup.zsh\n'}
+[47.595945] (traversablity_estimation_net) StdoutLine: {'line': b'-- Up-to-date symlink: /home/atas/RESEARCH/traversablity_estimation_net/install/traversablity_estimation_net/share/traversablity_estimation_net/local_setup.dsv\n'}
+[47.596129] (traversablity_estimation_net) StdoutLine: {'line': b'-- Symlinking: /home/atas/RESEARCH/traversablity_estimation_net/install/traversablity_estimation_net/share/traversablity_estimation_net/package.dsv\n'}
+[47.605008] (traversablity_estimation_net) StdoutLine: {'line': b'-- Up-to-date symlink: /home/atas/RESEARCH/traversablity_estimation_net/install/traversablity_estimation_net/share/ament_index/resource_index/packages/traversablity_estimation_net\n'}
+[47.605399] (traversablity_estimation_net) StdoutLine: {'line': b'-- Up-to-date symlink: /home/atas/RESEARCH/traversablity_estimation_net/install/traversablity_estimation_net/share/traversablity_estimation_net/cmake/ament_cmake_export_dependencies-extras.cmake\n'}
+[47.605727] (traversablity_estimation_net) StdoutLine: {'line': b'-- Up-to-date symlink: /home/atas/RESEARCH/traversablity_estimation_net/install/traversablity_estimation_net/share/traversablity_estimation_net/cmake/traversablity_estimation_netConfig.cmake\n'}
+[47.605978] (traversablity_estimation_net) StdoutLine: {'line': b'-- Up-to-date symlink: /home/atas/RESEARCH/traversablity_estimation_net/install/traversablity_estimation_net/share/traversablity_estimation_net/cmake/traversablity_estimation_netConfig-version.cmake\n'}
+[47.607037] (traversablity_estimation_net) StdoutLine: {'line': b'-- Up-to-date symlink: /home/atas/RESEARCH/traversablity_estimation_net/install/traversablity_estimation_net/share/traversablity_estimation_net/package.xml\n'}
+[47.615319] (traversablity_estimation_net) CommandEnded: {'returncode': 0}
+[47.663379] (-) TimerEvent: {}
+[47.764686] (-) TimerEvent: {}
+[47.865291] (-) TimerEvent: {}
+[47.965715] (-) TimerEvent: {}
+[48.082171] (-) TimerEvent: {}
+[48.184196] (-) TimerEvent: {}
+[48.284540] (-) TimerEvent: {}
+[48.378032] (traversablity_estimation_net) JobEnded: {'identifier': 'traversablity_estimation_net', 'rc': 0}
+[48.380074] (-) EventReactorShutdown: {}

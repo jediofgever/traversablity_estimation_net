@@ -1,0 +1,7 @@
+[01m[K/home/atas/RESEARCH/traversablity_estimation_net/src/traversablity_smoother_node.cpp:28:10:[m[K [01;31m[Kfatal error: [m[Ktf2_eigen/tf2_eigen.hpp: No such file or directory
+   28 | #include [01;31m[K<tf2_eigen/tf2_eigen.hpp>[m[K
+      |          [01;31m[K^~~~~~~~~~~~~~~~~~~~~~~~~[m[K
+compilation terminated.
+gmake[2]: *** [CMakeFiles/traversablity_smoother_node.dir/build.make:76: CMakeFiles/traversablity_smoother_node.dir/src/traversablity_smoother_node.cpp.o] Error 1
+gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/traversablity_smoother_node.dir/all] Error 2
+gmake: *** [Makefile:146: all] Error 2

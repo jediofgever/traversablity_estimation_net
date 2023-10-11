@@ -1,0 +1,1 @@
+ament_cmake_symlink_install_targets("TARGET_FILES" "/home/atas/RESEARCH/traversablity_estimation_net/build/traversablity_estimation_net/traversablity_smoother_node" "TARGETS" "traversablity_smoother_node" "RUNTIME_DESTINATION" "lib/traversablity_estimation_net")

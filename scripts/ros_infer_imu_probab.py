@@ -16,7 +16,7 @@ from sensor_msgs_py.point_cloud2 import read_points_numpy, create_cloud
 from std_msgs.msg import Header
 import sensor_msgs.msg as sensor_msgs
 from vision_msgs.msg import Detection3D, Detection3DArray
-from vision_msgs.msg import ObjectHypothesisWithPose
+from vision_msgs.msg import ObjectHypothesisWithPose, ObjectHypothesis
 from std_msgs.msg import Float32MultiArray
 
 
@@ -28,46 +28,7 @@ from dataset import pc_normalize
 from pointnet_curv import PointnetCurv
 from datasetIMU import compute_curvature_static
 
-import matplotlib.pyplot as plt
-
-def scalar_to_rgb(scalar):
-    # Invert the scalar value (1 - scalar) to map high values to low hue (green)
-    inverted_scalar = 1 - scalar
-
-    # Map the inverted scalar value to the HSV color space
-    hue = inverted_scalar * 240  # 0 to 1 maps to 0° to 240° (green to red)
-    saturation = 1.0   # Full saturation
-    value = 1.0        # Full brightness
-
-    # Convert HSV to RGB
-    hue /= 60.0
-    chroma = value * saturation
-    x = chroma * (1 - abs(hue % 2 - 1))
-    
-    if 0 <= hue < 1:
-        r, g, b = chroma, x, 0
-    elif 1 <= hue < 2:
-        r, g, b = x, chroma, 0
-    elif 2 <= hue < 3:
-        r, g, b = 0, chroma, x
-    elif 3 <= hue < 4:
-        r, g, b = 0, x, chroma
-    elif 4 <= hue < 5:
-        r, g, b = x, 0, chroma
-    else:
-        r, g, b = chroma, 0, x
-
-    m = value - chroma
-    r, g, b = r + m, g + m, b + m
-
-    # Scale RGB values to the range [0, 1]
-    r /= 1.0
-    g /= 1.0
-    b /= 1.0
-
-    return r, g, b
-
-
+ 
 class PCDSubPubNode(Node):
     """ Node for subscribing to a point cloud and publishing the traversability map
         Uses a pretrained PointNet model to infer the traversability of the local map
@@ -80,7 +41,7 @@ class PCDSubPubNode(Node):
     def __init__(self):
         super().__init__('pcd_subsriber_node')
         
-        self.local_map_topic_name = '/modified_map'
+        self.local_map_topic_name = '/map_cloud'
         self.traversablity_detection_topic_name = '/pointnet/traversability/map_local'
         self.traversablity_crop_boxes_topic_name = '/pointnet/traversability/crop_boxes'
         self.get_logger().info('Subscribing to ' + self.local_map_topic_name)
@@ -90,21 +51,19 @@ class PCDSubPubNode(Node):
                                self.traversablity_crop_boxes_topic_name)
 
         self.model_path = 'weights/epoch_550.pt'
-        self.batch_size = 256
+        self.batch_size = 128
         self.use_sim_time = True
         self.use_two_directions = False
 
         # config for the crop boxes and traversability map
         # crop the cloud to the region of interest
-        self.min_corner = [-4, -4, -4.5]
-        self.max_corner = [4, 4, 1.5]
+        self.min_corner = [-6, -4, -4.5]
+        self.max_corner = [6, 4, 1.5]
         self.x_box_size = 2.0
         self.y_box_size = self.x_box_size / 2.0
         self.min_points = 3
         self.x_step_size = self.x_box_size / 2.0
-        self.y_step_size = self.y_box_size / 2.0
-        self.kdtree_radius = 0.3
-        self.cropped_cloud_downsample_size = 0.2
+        self.y_step_size = self.x_box_size / 2.0
         
         # size of imu data array (1, 13)
         self.latest_imu_data = np.zeros((13, 1))
@@ -120,7 +79,6 @@ class PCDSubPubNode(Node):
         self.get_logger().info('X step size: ' + str(self.x_step_size))
         self.get_logger().info('Y step size: ' + str(self.y_step_size))
         self.get_logger().info('Min points: ' + str(self.min_points))
-        self.get_logger().info('kd tree radius: ' + str(self.kdtree_radius))
 
         self.from_frame_rel = 'odom'
         self.to_frame_rel = 'base_link'
@@ -143,7 +101,8 @@ class PCDSubPubNode(Node):
         self.box_publisher = self.create_publisher(
             Detection3DArray,
             self.traversablity_crop_boxes_topic_name,
-            1)
+            #1)
+            rclpy.qos.qos_profile_sensor_data)
 
         self.buffer = Buffer()
         self.listener = TransformListener(self.buffer, self)
@@ -211,16 +170,17 @@ class PCDSubPubNode(Node):
         for ndx in range(0, l, n):
             yield iterable[ndx:min(ndx + n, l)]
 
-    def populate_and_publish_boxes(self,  boxes, header):
+    def populate_and_publish_boxes(self,  boxes, box_predictions, header):
         """Populates the Detection3DArray message and publishes it
            The point cloud is cropped to an inflated robot footprint and fed 
            to the PointNet model. The output of the model is a regressed values between 0 and 1
            For debugging purposes, the crop boxes publish as a Detection3DArray message
         """
-        detection_array = Detection3DArray()
-        hyp = ObjectHypothesisWithPose()
+        detection_array = Detection3DArray() 
         detection_array.header = header
         detection_array.detections = []
+        
+        index = 0
 
         for box in boxes:
 
@@ -242,8 +202,19 @@ class PCDSubPubNode(Node):
             detection.header = header
             detection.bbox.size = size
             detection.bbox.center = center
-            detection.results = [hyp]
+            
+            # popultte the hypothesis
+            hyp_pose = ObjectHypothesisWithPose()
+            hyp = ObjectHypothesis()
+            hyp.class_id = "traversability_cost"
+            # convert to native float 
+            score = float(box_predictions[index]) 
+            hyp.score = score
+            hyp_pose.hypothesis = hyp
+
+            detection.results = [hyp_pose]
             detection_array.detections.append(detection)
+            index = index + 1
 
         self.box_publisher.publish(detection_array)
 
@@ -303,7 +274,6 @@ class PCDSubPubNode(Node):
                     current_min_corner, current_max_corner
                 )
 
-                boxes.append(this_box)
 
                 cropped_pcd = pcd.crop(this_box)
 
@@ -339,23 +309,13 @@ class PCDSubPubNode(Node):
                         (points.shape[0], points.shape[1], 1))
                     data_list.append(points)
                     geometries.append(cropped_pcd)
-
-        header.frame_id = self.to_frame_rel
-
-        self.populate_and_publish_boxes(boxes, header)
-
-        crop_index = 0
-        final_cloud = o3d.geometry.PointCloud()
-        final_cloud_points = []
-        final_cloud_colors = []
+                    boxes.append(this_box)
         
-        # reset all the normals to zero in pcd 
-        pcd.normals = o3d.utility.Vector3dVector(np.zeros((len(pcd.points), 3)))
-        colormap = plt.get_cmap('cividis')
-        norm = plt.Normalize(vmin=0, vmax=1)
-        # use x component of normals to store the traversability values
+        # allocate a1D array to store the box predictions
+        box_predictions = np.zeros(len(geometries), dtype=np.float32)
 
         # measure net inference time
+        crop_index = 0
         for x in self.batch(data_list, self.batch_size):
             batches = []
             batch_index = 0
@@ -374,41 +334,21 @@ class PCDSubPubNode(Node):
             # add imu data as torch tensor float32
             imu_data = torch.cat(imu_data, dim=1).cuda()
             
-            print("imu data shape: ", imu_data.shape)
-
             predictions = self.net(points, imu_data, batches).cpu().detach().numpy()
             
-            
-
-            for crop_index, p in enumerate(predictions):
+            for p in predictions:
                 p = np.clip(p, 0, 1)
-                downsampled_crop = geometries[crop_index].voxel_down_sample(voxel_size=self.cropped_cloud_downsample_size)
-                non_normalized_crop = np.asarray(downsampled_crop.points)
-                pcd_normals = np.asarray(pcd.normals)
-                pcd_colors = np.asarray(pcd.colors)
+                box_predictions[crop_index] = p[0]
+                crop_index = crop_index + 1
             
+        header.frame_id = self.to_frame_rel
 
-                for point in non_normalized_crop:
-                    # Find neighbors in the original cloud kdtree
-                    [k, idx, _] = pcd_tree.search_radius_vector_3d(point, self.kdtree_radius)
+        self.populate_and_publish_boxes(boxes, box_predictions, header)
 
-                    if len(idx) > 0:
-                        mean_x_normal = np.mean(pcd_normals[idx], axis=0)[0]
-                        
-                        #continue
-                        updated_x_normal = (len(idx) * mean_x_normal + p[0]) / (len(idx) + 1)
-
-                        # Update normals and colors
-                        pcd_normals[idx, 0] = updated_x_normal
-                        
-                        r, g, b = scalar_to_rgb(updated_x_normal)
-
-                        
-                        pcd_colors[idx[1:], :] = [r,g,b]
-        
         if len(non_normalized_points) == 0:
             self.get_logger().info("No points in the cloud")
             return
+        final_cloud = o3d.geometry.PointCloud()
 
         final_cloud.points = o3d.utility.Vector3dVector(
             np.asarray(pcd.points, dtype=np.float32))

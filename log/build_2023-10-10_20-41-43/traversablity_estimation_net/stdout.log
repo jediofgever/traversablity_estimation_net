@@ -1,0 +1,6 @@
+[ 50%] [32mBuilding CXX object CMakeFiles/traversablity_smoother_node.dir/src/traversablity_smoother_node.cpp.o[0m
+[100%] [32m[1mLinking CXX executable traversablity_smoother_node[0m
+[100%] Built target traversablity_smoother_node
+-- Install configuration: ""
+-- Installing: /home/atas/RESEARCH/traversablity_estimation_net/install/traversablity_estimation_net/lib/traversablity_estimation_net/traversablity_smoother_node
+-- Set runtime path of "/home/atas/RESEARCH/traversablity_estimation_net/install/traversablity_estimation_net/lib/traversablity_estimation_net/traversablity_smoother_node" to ""

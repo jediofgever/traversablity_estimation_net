@@ -1,0 +1,53 @@
+[ 50%] [32mBuilding CXX object CMakeFiles/traversablity_smoother_node.dir/src/traversablity_smoother_node.cpp.o[0m
+In file included from [01m[K/home/atas/RESEARCH/traversablity_estimation_net/src/traversablity_smoother_node.cpp:31[m[K:
+[01m[K/opt/ros/humble/include/tf2_geometry_msgs/tf2_geometry_msgs/tf2_geometry_msgs.h:35:2:[m[K [01;35m[Kwarning: [m[K#warning This header is obsolete, please include tf2_geometry_msgs/tf2_geometry_msgs.hpp instead [[01;35m[K]8;;https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html#index-Wcpp-Wcpp]8;;[m[K]
+   35 | #[01;35m[Kwarning[m[K This header is obsolete, please include tf2_geometry_msgs/tf2_geometry_msgs.hpp instead
+      |  [01;35m[K^~~~~~~[m[K
+[01m[K/home/atas/RESEARCH/traversablity_estimation_net/src/traversablity_smoother_node.cpp:[m[K In member function ‘[01m[Kvoid vox_nav_misc::lidar_rgb_image_fuser::ousterCamCallback(const ConstSharedPtr&, const ConstSharedPtr&)[m[K’:
+[01m[K/home/atas/RESEARCH/traversablity_estimation_net/src/traversablity_smoother_node.cpp:206:3:[m[K [01;31m[Kerror: [m[K‘[01m[Kcv_bridge[m[K’ has not been declared
+  206 |   [01;31m[Kcv_bridge[m[K::CvImagePtr cv_ptr;
+      |   [01;31m[K^~~~~~~~~[m[K
+[01m[K/home/atas/RESEARCH/traversablity_estimation_net/src/traversablity_smoother_node.cpp:209:5:[m[K [01;31m[Kerror: [m[K‘[01m[Kcv_ptr[m[K’ was not declared in this scope; did you mean ‘[01m[Ksi_ptr[m[K’?
+  209 |     [01;31m[Kcv_ptr[m[K = cv_bridge::toCvCopy(image, sensor_msgs::image_encodings::RGB8);
+      |     [01;31m[K^~~~~~[m[K
+      |     [32m[Ksi_ptr[m[K
+[01m[K/home/atas/RESEARCH/traversablity_estimation_net/src/traversablity_smoother_node.cpp:209:14:[m[K [01;31m[Kerror: [m[K‘[01m[Kcv_bridge[m[K’ has not been declared
+  209 |     cv_ptr = [01;31m[Kcv_bridge[m[K::toCvCopy(image, sensor_msgs::image_encodings::RGB8);
+      |              [01;31m[K^~~~~~~~~[m[K
+[01m[K/home/atas/RESEARCH/traversablity_estimation_net/src/traversablity_smoother_node.cpp:209:54:[m[K [01;31m[Kerror: [m[K‘[01m[Ksensor_msgs::image_encodings[m[K’ has not been declared
+  209 |     cv_ptr = cv_bridge::toCvCopy(image, sensor_msgs::[01;31m[Kimage_encodings[m[K::RGB8);
+      |                                                      [01;31m[K^~~~~~~~~~~~~~~[m[K
+[01m[K/home/atas/RESEARCH/traversablity_estimation_net/src/traversablity_smoother_node.cpp:211:10:[m[K [01;31m[Kerror: [m[K‘[01m[Kcv_bridge[m[K’ does not name a type
+  211 |   catch ([01;31m[Kcv_bridge[m[K::Exception& e)
+      |          [01;31m[K^~~~~~~~~[m[K
+[01m[K/home/atas/RESEARCH/traversablity_estimation_net/src/traversablity_smoother_node.cpp:211:30:[m[K [01;31m[Kerror: [m[Kexpected unqualified-id before ‘[01m[K&[m[K’ token
+  211 |   catch (cv_bridge::Exception[01;31m[K&[m[K e)
+      |                              [01;31m[K^[m[K
+[01m[K/home/atas/RESEARCH/traversablity_estimation_net/src/traversablity_smoother_node.cpp:211:30:[m[K [01;31m[Kerror: [m[Kexpected ‘[01m[K)[m[K’ before ‘[01m[K&[m[K’ token
+  211 |   catch [34m[K([m[Kcv_bridge::Exception[01;31m[K&[m[K e)
+      |         [34m[K~[m[K                    [01;31m[K^[m[K
+      |                              [32m[K)[m[K
+[01m[K/home/atas/RESEARCH/traversablity_estimation_net/src/traversablity_smoother_node.cpp:211:30:[m[K [01;31m[Kerror: [m[Kexpected ‘[01m[K{[m[K’ before ‘[01m[K&[m[K’ token
+[01m[K/home/atas/RESEARCH/traversablity_estimation_net/src/traversablity_smoother_node.cpp:211:32:[m[K [01;31m[Kerror: [m[K‘[01m[Ke[m[K’ was not declared in this scope
+  211 |   catch (cv_bridge::Exception& [01;31m[Ke[m[K)
+      |                                [01;31m[K^[m[K
+[01m[K/home/atas/RESEARCH/traversablity_estimation_net/src/traversablity_smoother_node.cpp:222:22:[m[K [01;31m[Kerror: [m[K‘[01m[Kcv_ptr[m[K’ was not declared in this scope; did you mean ‘[01m[Ksi_ptr[m[K’?
+  222 |     if (u > 0 && u < [01;31m[Kcv_ptr[m[K->image.cols && v > 0 && v < cv_ptr->image.rows)
+      |                      [01;31m[K^~~~~~[m[K
+      |                      [32m[Ksi_ptr[m[K
+[01m[K/home/atas/RESEARCH/traversablity_estimation_net/src/traversablity_smoother_node.cpp:232:7:[m[K [01;31m[Kerror: [m[K‘[01m[Kcv[m[K’ has not been declared
+  232 |       [01;31m[Kcv[m[K::circle(cv_ptr->image, cv::Point(u, v), 2, cv::Scalar(r, g, b), 2);
+      |       [01;31m[K^~[m[K
+[01m[K/home/atas/RESEARCH/traversablity_estimation_net/src/traversablity_smoother_node.cpp:232:33:[m[K [01;31m[Kerror: [m[K‘[01m[Kcv[m[K’ has not been declared
+  232 |       cv::circle(cv_ptr->image, [01;31m[Kcv[m[K::Point(u, v), 2, cv::Scalar(r, g, b), 2);
+      |                                 [01;31m[K^~[m[K
+[01m[K/home/atas/RESEARCH/traversablity_estimation_net/src/traversablity_smoother_node.cpp:232:53:[m[K [01;31m[Kerror: [m[K‘[01m[Kcv[m[K’ has not been declared
+  232 |       cv::circle(cv_ptr->image, cv::Point(u, v), 2, [01;31m[Kcv[m[K::Scalar(r, g, b), 2);
+      |                                                     [01;31m[K^~[m[K
+[01m[K/home/atas/RESEARCH/traversablity_estimation_net/src/traversablity_smoother_node.cpp:237:50:[m[K [01;31m[Kerror: [m[K‘[01m[Kcv_ptr[m[K’ was not declared in this scope; did you mean ‘[01m[Ksi_ptr[m[K’?
+  237 |   sensor_msgs::msg::Image::SharedPtr image_msg = [01;31m[Kcv_ptr[m[K->toImageMsg();
+      |                                                  [01;31m[K^~~~~~[m[K
+      |                                                  [32m[Ksi_ptr[m[K
+gmake[2]: *** [CMakeFiles/traversablity_smoother_node.dir/build.make:76: CMakeFiles/traversablity_smoother_node.dir/src/traversablity_smoother_node.cpp.o] Error 1
+gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/traversablity_smoother_node.dir/all] Error 2
+gmake: *** [Makefile:146: all] Error 2

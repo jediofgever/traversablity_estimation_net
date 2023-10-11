@@ -1,0 +1,8 @@
+source;share/traversablity_estimation_net/hook/cmake_prefix_path.ps1
+source;share/traversablity_estimation_net/hook/cmake_prefix_path.dsv
+source;share/traversablity_estimation_net/hook/cmake_prefix_path.sh
+source;share/traversablity_estimation_net/local_setup.bash
+source;share/traversablity_estimation_net/local_setup.dsv
+source;share/traversablity_estimation_net/local_setup.ps1
+source;share/traversablity_estimation_net/local_setup.sh
+source;share/traversablity_estimation_net/local_setup.zsh

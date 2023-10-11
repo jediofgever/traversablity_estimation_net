@@ -57,7 +57,7 @@ class PCDSubPubNode(Node):
 
         # config for the crop boxes and traversability map
         # crop the cloud to the region of interest
-        self.min_corner = [-6, -4, -4.5]
+        self.min_corner = [-6, -4, -1.5]
         self.max_corner = [6, 4, 1.5]
         self.x_box_size = 2.0
         self.y_box_size = self.x_box_size / 2.0
@@ -262,7 +262,7 @@ class PCDSubPubNode(Node):
 
                 current_min_corner = [
                     self.min_corner[0] + self.x_step_size * x,
-                    self.min_corner[1] + self.y_step_size * y, -4.5,
+                    self.min_corner[1] + self.y_step_size * y, -1.5,
                 ]
 
                 current_max_corner = [

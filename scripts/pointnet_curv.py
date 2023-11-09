@@ -29,7 +29,6 @@ class PointnetCurv(nn.Module):
         x = self.fc2(x)
 
         # make imu view as batch size x 13
-        imu = imu.view(-1, imu.shape[0])
         x = torch.cat((x, imu), dim=1)
         x = self.fc3(x)
         return x

@@ -30,7 +30,37 @@ from datasetIMU import compute_curvature_static
 
 import matplotlib.pyplot as plt
 
+import sys
 
+EPSILON = sys.float_info.epsilon
+
+def convert_to_rgb(minval, maxval, val, colors):
+    # Determine where the given value falls proportionality within
+    # the range from minval to maxval and scale that fractional value
+    # by the total number in the `colors` palette.
+    i_f = (val - minval) / (maxval - minval) * (len(colors) - 1)
+
+    # Determine the lower index of the pair of color indices this
+    # value corresponds and its fractional distance between the lower
+    # and the upper colors.
+    i = int(i_f)
+    f = i_f - i
+
+    # Does it fall exactly on one of the color points?
+    if f < EPSILON:
+        return colors[i]
+    else:
+        # Return a color linearly interpolated between the range of it and the following one.
+        r1, g1, b1 = colors[i]
+        r2, g2, b2 = colors[i + 1]
+
+        return (
+            int(r1 + f * (r2 - r1)),
+            int(g1 + f * (g2 - g1)),
+            int(b1 + f * (b2 - b1))
+        )
+        
+        
 class PCDSubPubNode(Node):
     """ Node for subscribing to a point cloud and publishing the traversability map
         Uses a pretrained PointNet model to infer the traversability of the local map
@@ -60,11 +90,12 @@ class PCDSubPubNode(Node):
 
         # config for the crop boxes and traversability map
         # crop the cloud to the region of interest
-        self.min_corner = [-5, -5, -4.5]
+        self.min_corner = [-5, -5, -1.5]
         self.max_corner = [5, 5, 1.5]
         self.x_step_size = 1.0
         self.y_step_size = 2.0*self.x_step_size / 3.0
         self.min_points = 3
+        self.use_pointnormals = True
         
         # size of imu data array (1, 13)
         self.latest_imu_data = np.zeros((13, 1))
@@ -78,6 +109,7 @@ class PCDSubPubNode(Node):
         self.get_logger().info('X step size: ' + str(self.x_step_size))
         self.get_logger().info('Y step size: ' + str(self.y_step_size))
         self.get_logger().info('Min points: ' + str(self.min_points))
+        self.get_logger().info('Use point normals: ' + str(self.use_pointnormals))
 
         self.from_frame_rel = 'odom'
         self.to_frame_rel = 'base_link'
@@ -224,8 +256,9 @@ class PCDSubPubNode(Node):
         pcd = pcd.crop(o3d.geometry.AxisAlignedBoundingBox(
             self.min_corner, self.max_corner))
         
-        pcd.estimate_normals(
-            search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=0.15, max_nn=30))
+        if self.use_pointnormals:
+            pcd.estimate_normals(
+                search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=0.15, max_nn=30))
                 
         # downsample the cloud
         pcd = pcd.voxel_down_sample(voxel_size=0.08)
@@ -244,7 +277,7 @@ class PCDSubPubNode(Node):
 
                 current_min_corner = [
                     self.min_corner[0] + self.x_step_size * x,
-                    self.min_corner[1] + self.y_step_size * y, -4.5,
+                    self.min_corner[1] + self.y_step_size * y, -1.5,
                 ]
 
                 current_max_corner = [
@@ -273,7 +306,9 @@ class PCDSubPubNode(Node):
                     non_normalized_points.append(torch.tensor(non_normalized_crop))
 
                     points = pc_normalize(points)
-                    points = np.hstack((points, normals))
+                    
+                    if self.use_pointnormals:
+                        points = np.hstack((points, normals))
 
                     # if this box is centered at the back of the car, we rotate cloud by 180 degrees
                     if (current_max_corner[0] + current_min_corner[0]) / 2 < 0:
@@ -324,28 +359,33 @@ class PCDSubPubNode(Node):
             
             # add imu data as torch tensor float32
             imu_data = torch.cat(imu_data, dim=1).cuda()
+            imu_data = imu_data.view(-1, 13)
             
-            print("imu data shape: ", imu_data.shape)
-
             predictions = self.net(points, imu_data, batches).cpu().detach().numpy()
+            
+            colors = []
+            colors.append((0, 0, 255)) # blue
+            colors.append((0, 255, 0)) # green
+            colors.append((255, 0, 0)) # red
+            
+            min_travsability = 0.0
+            max_travsability = 0.7
 
             for p in predictions:
                 p = np.clip(p, 0, 1)
                 
                 # Define a value in the range [0, 1]
                 value = p[0]
-
-                # Choose a colormap (e.g., 'viridis')
-                colormap = plt.get_cmap('cividis')
-
-                # Map the value to an RGB color
-                color = colormap(value)
                 
-                norm = plt.Normalize(vmin=0, vmax=1)
+                # clip the value to min_travsability and max_travsability
+                value = np.clip(value, min_travsability, max_travsability)
                 
-                color = norm(color)
-
-
+                # convert the value to a color
+                color = convert_to_rgb(min_travsability, max_travsability, value, colors)
+                
+                # Normalize the value to the range [0, 1]
+                color = (color[0]/255.0, color[1]/255.0, color[2]/255.0)
+ 
                 geometries[crop_index].paint_uniform_color(
                         [color[0], color[1], color[2]])
  
@@ -419,7 +459,6 @@ class PCDSubPubNode(Node):
 
         self.get_logger().info("Inference time: " + str(time.time() - start))
         self.obstacle_pcd_publisher.publish(final_ros_cloud)
-
 
 def main():
     rclpy.init()

@@ -11,12 +11,13 @@ def generate_launch_description():
         remappings=[
             ("boxes", "/pointnet/traversability/crop_boxes"),
             ("points", "/pointnet/traversability/map_local"),
+            ("smoothed_traversability", "/traversable_cloud"),
         ],
         parameters=[
             {"use_sim_time": True,
              "octree_voxel_size": 0.2,
              "neighbouring_search_radius": 0.3,
-             "smoothed_cloud_downsample_voxel_size": 0.05,   
+             "smoothed_cloud_downsample_voxel_size": 0.025,   
              },
             
  

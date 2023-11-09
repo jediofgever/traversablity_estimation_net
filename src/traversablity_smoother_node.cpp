@@ -244,7 +244,7 @@ void traversability_smoother::boxLidarCallback(const vision_msgs::msg::Detection
   pcl::PointCloud<pcl::PointXYZRGB>::Ptr pcl_cloud_rgb(new pcl::PointCloud<pcl::PointXYZRGB>);
 
   float min = 0.0;
-  float max = 1.0;
+  float max = 0.6;
   std::vector<std::tuple<int, int, int>> colors;
   colors.push_back(std::make_tuple(0, 0, 255));  // blue
   colors.push_back(std::make_tuple(0, 255, 0));  // green
@@ -257,10 +257,21 @@ void traversability_smoother::boxLidarCallback(const vision_msgs::msg::Detection
     this_point.y = point.y;
     this_point.z = point.z;
 
+    // clip intensity to min and max
+    if (point.intensity < min)
+    {
+      point.intensity = min;
+    }
+    if (point.intensity > max)
+    {
+      point.intensity = max;
+    }
+
     auto rgb = convert_to_rgb(min, max, point.intensity, colors);
     this_point.r = std::get<0>(rgb);
     this_point.g = std::get<1>(rgb);
     this_point.b = std::get<2>(rgb);
+    this_point.a = 255;
 
     pcl_cloud_rgb->points.push_back(this_point);
   }

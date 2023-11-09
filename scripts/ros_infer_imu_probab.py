@@ -41,7 +41,8 @@ class PCDSubPubNode(Node):
     def __init__(self):
         super().__init__('pcd_subsriber_node')
         
-        self.local_map_topic_name = '/map_cloud'
+        #self.local_map_topic_name = '/modified_map'
+        self.local_map_topic_name = '/lio_sam/mapping/map_global'
         self.traversablity_detection_topic_name = '/pointnet/traversability/map_local'
         self.traversablity_crop_boxes_topic_name = '/pointnet/traversability/crop_boxes'
         self.get_logger().info('Subscribing to ' + self.local_map_topic_name)
@@ -51,19 +52,23 @@ class PCDSubPubNode(Node):
                                self.traversablity_crop_boxes_topic_name)
 
         self.model_path = 'weights/epoch_550.pt'
-        self.batch_size = 128
+        self.batch_size = 64
         self.use_sim_time = True
         self.use_two_directions = False
 
         # config for the crop boxes and traversability map
         # crop the cloud to the region of interest
-        self.min_corner = [-6, -4, -1.5]
-        self.max_corner = [6, 4, 1.5]
-        self.x_box_size = 2.0
+        self.min_corner = [-0, -8, -8.0]
+        self.max_corner = [16, 8, 8.0]
+        #self.min_corner = [-5, -5, -4.0]
+        #self.max_corner = [5, 5, 4.0]
+        self.x_box_size = 1.0
         self.y_box_size = self.x_box_size / 2.0
+        self.z_box_size = 0.75
         self.min_points = 3
         self.x_step_size = self.x_box_size / 2.0
         self.y_step_size = self.x_box_size / 2.0
+        self.z_step_size = 0.75
         
         # size of imu data array (1, 13)
         self.latest_imu_data = np.zeros((13, 1))
@@ -88,6 +93,7 @@ class PCDSubPubNode(Node):
             self.local_map_topic_name,                          # topic
             self.listener_callback,                             # Function to call
             1       # QoS
+            #rclpy.qos.qos_profile_sensor_data
         )
         
         self.imu_subscriber = self.create_subscription(Float32MultiArray, 'imu_info', self.imu_callback, 1)
@@ -120,9 +126,14 @@ class PCDSubPubNode(Node):
         self.get_logger().info('Model loaded')
 
     def imu_callback(self, imu):
+        print("imu callback")
         # loop through the imu data and populate the latest_imu_data array
         for i in range(0, len(imu.data)):
             self.latest_imu_data[i, 0] = imu.data[i]
+        # replace the nan values with 0
+        self.latest_imu_data = np.nan_to_num(self.latest_imu_data)
+        
+        print(self.latest_imu_data)    
         
             
     def listener_callback(self, msg: sensor_msgs.PointCloud2):
@@ -250,6 +261,7 @@ class PCDSubPubNode(Node):
         
         x_dist = abs(self.max_corner[0] - self.min_corner[0])
         y_dist = abs(self.max_corner[1] - self.min_corner[1])
+        z_dist = abs(self.max_corner[2] - self.min_corner[2])
 
         geometries = []
         boxes = []
@@ -259,57 +271,61 @@ class PCDSubPubNode(Node):
         for x in range(0, int(x_dist / self.x_step_size)):
 
             for y in range(0, int(y_dist / self.y_step_size)):
+                
+                for z in range(0, int(z_dist / self.z_step_size)):
 
-                current_min_corner = [
-                    self.min_corner[0] + self.x_step_size * x,
-                    self.min_corner[1] + self.y_step_size * y, -1.5,
-                ]
+                    current_min_corner = [
+                        self.min_corner[0] + self.x_step_size * x,
+                        self.min_corner[1] + self.y_step_size * y, 
+                        self.min_corner[2] + self.z_step_size * z,
+                    ]
 
-                current_max_corner = [
-                    current_min_corner[0] + self.x_box_size,
-                    current_min_corner[1] + self.y_box_size,  1.5,
-                ]
+                    current_max_corner = [
+                        current_min_corner[0] + self.x_box_size,
+                        current_min_corner[1] + self.y_box_size,  
+                        current_min_corner[2] + self.z_box_size,
+                    ]
 
-                this_box = o3d.geometry.AxisAlignedBoundingBox(
-                    current_min_corner, current_max_corner
-                )
+                    this_box = o3d.geometry.AxisAlignedBoundingBox(
+                        current_min_corner, current_max_corner
+                    )
 
 
-                cropped_pcd = pcd.crop(this_box)
+                    cropped_pcd = pcd.crop(this_box)
 
-                if len(cropped_pcd.points) < self.min_points:
-                    continue
-                else:
-                    normals = np.asarray(cropped_pcd.normals).astype(np.float32)
-                    points = np.asarray(cropped_pcd.points).astype(np.float32)
-                    non_normalized_crop = copy.deepcopy(points)
-                    non_normalized_points.append(torch.tensor(non_normalized_crop))
+                    if len(cropped_pcd.points) < self.min_points:
+                        continue
+                    else:
+                        normals = np.asarray(cropped_pcd.normals).astype(np.float32)
+                        points = np.asarray(cropped_pcd.points).astype(np.float32)
+                        non_normalized_crop = copy.deepcopy(points)
+                        non_normalized_points.append(torch.tensor(non_normalized_crop))
 
-                    points = pc_normalize(points)
-                    points = np.hstack((points, normals))
+                        points = pc_normalize(points)
+                        points = np.hstack((points, normals))
 
-                    # if this box is centered at the back of the car, we rotate cloud by 180 degrees
-                    if (current_max_corner[0] + current_min_corner[0]) / 2 < 0:
-                        # rotate by 180 degrees
-                        if self.use_two_directions:
-                            deep_copy = copy.deepcopy(cropped_pcd)
-                            points = np.asarray(
-                                deep_copy.points).astype(np.float32)
-                            points = pc_normalize(points)
-                            deep_copy.points = o3d.utility.Vector3dVector(
-                                points)
-                            R = deep_copy.get_rotation_matrix_from_xyz(
-                                (0, 0, np.pi))
-                            deep_copy.rotate(R, center=(0, 0, 0))
-                            points = np.asarray(
-                                deep_copy.points).astype(np.float32)
+                        # if this box is centered at the back of the car, we rotate cloud by 180 degrees
+                        if (current_max_corner[0] + current_min_corner[0]) / 2 < 0:
+                            # rotate by 180 degrees
+                            if self.use_two_directions:
+                                deep_copy = copy.deepcopy(cropped_pcd)
+                                points = np.asarray(
+                                    deep_copy.points).astype(np.float32)
+                                points = pc_normalize(points)
+                                deep_copy.points = o3d.utility.Vector3dVector(
+                                    points)
+                                R = deep_copy.get_rotation_matrix_from_xyz(
+                                    (0, 0, np.pi))
+                                deep_copy.rotate(R, center=(0, 0, 0))
+                                points = np.asarray(
+                                    deep_copy.points).astype(np.float32)
 
-                    points = torch.tensor(points)
-                    points = points.reshape(
-                        (points.shape[0], points.shape[1], 1))
-                    data_list.append(points)
-                    geometries.append(cropped_pcd)
-                    boxes.append(this_box)
+                        points = torch.tensor(points)
+                        points = points.reshape(
+                            (points.shape[0], points.shape[1], 1))
+                        data_list.append(points)
+                        geometries.append(cropped_pcd)
+                        boxes.append(this_box)
         
         # allocate a1D array to store the box predictions
         box_predictions = np.zeros(len(geometries), dtype=np.float32)
@@ -333,7 +349,8 @@ class PCDSubPubNode(Node):
             
             # add imu data as torch tensor float32
             imu_data = torch.cat(imu_data, dim=1).cuda()
-            
+            imu_data = imu_data.view(-1, 13)
+
             predictions = self.net(points, imu_data, batches).cpu().detach().numpy()
             
             for p in predictions:

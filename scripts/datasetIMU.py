@@ -20,7 +20,7 @@ def pc_normalize(pc):
     pc = pc / m
     return pc
 
-def compute_curvature_static(point_cloud, normals, k=30):
+def compute_curvature_static(point_cloud, normals, k=10):
         curvatures = []
         tree = o3d.geometry.KDTreeFlann(point_cloud)
         for i in range(len(point_cloud.points)):
@@ -83,7 +83,7 @@ class TerrainDatasetIMU(InMemoryDataset):
             floats = np.array([float(num) for num in data])
         return floats
 
-    def compute_curvature(self, point_cloud, normals, k=30):
+    def compute_curvature(self, point_cloud, normals, k=10):
         curvatures = []
         tree = o3d.geometry.KDTreeFlann(point_cloud)
         for i in range(len(point_cloud.points)):
@@ -96,8 +96,8 @@ class TerrainDatasetIMU(InMemoryDataset):
     
     def process_set(self, dataset: str):
         
-        aug_noise_rate = 0.5
-        aug_downsample_rate = 0.5
+        aug_noise_rate = 0.9
+        aug_downsample_rate = 0.9
         
         # get all the filenames in the dataset there are identical filenames with one extension .pcd and one .txt
         # we only want the .pcd files so we filter them out
@@ -125,7 +125,10 @@ class TerrainDatasetIMU(InMemoryDataset):
             #print("Points shape: ", points.shape) 
             #print("Curvatures shape: ", np.asarray(curvatures).shape)
             #curvatures_reshaped = curvatures[:, np.newaxis]
+            #points = np.hstack((points, curvatures_reshaped))
+            
             points = np.hstack((points, normals))
+            
             # concat such that each point has also a curvature value
             #print("Points shape after concat: ", points.shape)
             
@@ -138,9 +141,12 @@ class TerrainDatasetIMU(InMemoryDataset):
             # load the txt file as a numpy array, delimeter is newline
             imu_data = np.loadtxt(filename,delimiter="\n", dtype=np.float32)
             
+            # The first 9 values are the imu acceleration components, remove them 
+            #imu_data = imu_data[9:]
+            
             
             # convert to torch tensor
-            data = Data(pos=points, y=torch.tensor(label), face=torch.tensor(imu_data))
+            data = Data(pos=points, y=torch.tensor(label), edge_attr=torch.tensor(imu_data))
             data_list.append(data)
         
         aug_samples = 0
@@ -182,7 +188,7 @@ class TerrainDatasetIMU(InMemoryDataset):
             # this is a pcd file, read with open3d
             o3d_cloud = o3d.io.read_point_cloud(selected_files[i])
             #Downsample the point cloud with random voxel size
-            voxel_size = np.random.uniform(0.05, 0.25)
+            voxel_size = np.random.uniform(0.05, 0.1)
             o3d_cloud = o3d_cloud.voxel_down_sample(voxel_size)
             label = self.extract_label(selected_files[i])             
             points = np.asarray(o3d_cloud.points).astype(np.float32)
@@ -196,9 +202,10 @@ class TerrainDatasetIMU(InMemoryDataset):
             #print("Points shape: ", points.shape) 
             #print("Curvatures shape: ", curvatures.shape)
             #curvatures_reshaped = curvatures[:, np.newaxis]
+            #points = np.hstack((points, curvatures_reshaped))
+            
             points = np.hstack((points, normals))
             # concat such that each point has also a curvature value
-            print("Points shape after concat: ", points.shape)
             
             points = torch.tensor(points)
             label = torch.tensor(np.asarray([label]).astype(np.float32))
@@ -209,7 +216,10 @@ class TerrainDatasetIMU(InMemoryDataset):
             # load the txt file as a numpy array, delimeter is newline
             imu_data = np.loadtxt(filename,delimiter="\n", dtype=np.float32)
             
-            data = Data(pos=points, y=torch.tensor(label), face=torch.tensor(imu_data))
+            # The first 9 values are the imu acceleration components, remove them 
+            #imu_data = imu_data[9:]
+            
+            data = Data(pos=points, y=torch.tensor(label), edge_attr=torch.tensor(imu_data))
             aug_data_list.append(data)
         
         return aug_data_list    
@@ -229,12 +239,12 @@ class TerrainDatasetIMU(InMemoryDataset):
             o3d_cloud = o3d.io.read_point_cloud(selected_files[i])
             #Add noise the point cloud  
             points = np.asarray(o3d_cloud.points).astype(np.float32)
-            noise = np.random.normal(0.01, 0.04, points.shape)
+            noise = np.random.normal(0.0, 0.025, points.shape)
             points = points + noise
             o3d_cloud.points = o3d.utility.Vector3dVector(points)
             
             # Estimate normals
-            o3d_cloud.estimate_normals(search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=0.1, max_nn=30))
+            o3d_cloud.estimate_normals(search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=0.15, max_nn=30))
             normals = np.asarray(o3d_cloud.normals).astype(np.float32)
             #curvatures = np.asarray(self.compute_curvature(o3d_cloud, o3d_cloud.normals)).astype(np.float32)
              
@@ -246,6 +256,8 @@ class TerrainDatasetIMU(InMemoryDataset):
             #print("Points shape: ", points.shape) 
             #print("Curvatures shape: ", np.asarray(curvatures).shape)
             #curvatures_reshaped = curvatures[:, np.newaxis]
+            #points = np.hstack((points, curvatures_reshaped))
+            
             points = np.hstack((points, normals))
             # concat such that each point has also a curvature value
             #print("Points shape after concat: ", points.shape)
@@ -258,7 +270,10 @@ class TerrainDatasetIMU(InMemoryDataset):
             # load the txt file as a numpy array, delimeter is newline
             imu_data = np.loadtxt(filename,delimiter="\n", dtype=np.float32)
             
-            data = Data(pos=points, y=torch.tensor(label), face=torch.tensor(imu_data))
+            # The first 9 values are the imu acceleration components, remove them 
+            #imu_data = imu_data[9:]
+            
+            data = Data(pos=points, y=torch.tensor(label), edge_attr=torch.tensor(imu_data))
             aug_data_list.append(data)
         
         return aug_data_list       

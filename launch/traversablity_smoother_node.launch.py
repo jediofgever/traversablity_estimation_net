@@ -18,6 +18,7 @@ def generate_launch_description():
              "octree_voxel_size": 0.2,
              "neighbouring_search_radius": 0.3,
              "smoothed_cloud_downsample_voxel_size": 0.025,   
+             "binary_thresholding": 0.0,
              },
             
  

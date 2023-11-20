@@ -66,6 +66,7 @@ private:
   float octree_voxel_size_;
   float neighbouring_search_radius_;
   float smoothed_cloud_downsample_voxel_size_;
+  float binary_thresholding_;
 
 public:
   traversability_smoother();
@@ -134,6 +135,8 @@ traversability_smoother::traversability_smoother() : rclcpp::Node("traversabilit
   get_parameter("neighbouring_search_radius", neighbouring_search_radius_);
   declare_parameter("smoothed_cloud_downsample_voxel_size", 0.05);
   get_parameter("smoothed_cloud_downsample_voxel_size", smoothed_cloud_downsample_voxel_size_);
+  declare_parameter("binary_thresholding", 0.5);
+  get_parameter("binary_thresholding", binary_thresholding_);
 
   // inform user the node has started
   RCLCPP_INFO(get_logger(), "traversability_smoother_rclcpp_node has started.");
@@ -265,6 +268,19 @@ void traversability_smoother::boxLidarCallback(const vision_msgs::msg::Detection
     if (point.intensity > max)
     {
       point.intensity = max;
+    }
+
+    // if binary thresholding is enabled, set intensity to min or max based on threshold
+    if (binary_thresholding_ > 0.0)
+    {
+      if (point.intensity < binary_thresholding_)
+      {
+        point.intensity = min;
+      }
+      else
+      {
+        point.intensity = max;
+      }
     }
 
     auto rgb = convert_to_rgb(min, max, point.intensity, colors);

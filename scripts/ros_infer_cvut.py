@@ -41,8 +41,7 @@ class PCDSubPubNode(Node):
     def __init__(self):
         super().__init__('pcd_subsriber_node')
         
-        #self.local_map_topic_name = '/modified_map'
-        self.local_map_topic_name = '/lio_sam/mapping/map_global'
+        self.local_map_topic_name = '/cvut_point_cloud'
         self.traversablity_detection_topic_name = '/pointnet/traversability/map_local'
         self.traversablity_crop_boxes_topic_name = '/pointnet/traversability/crop_boxes'
         self.get_logger().info('Subscribing to ' + self.local_map_topic_name)
@@ -58,17 +57,15 @@ class PCDSubPubNode(Node):
 
         # config for the crop boxes and traversability map
         # crop the cloud to the region of interest
-        self.min_corner = [-0, -4, -8.0]
-        self.max_corner = [10, 4, 8.0]
-        #self.min_corner = [-5, -5, -4.0]
-        #self.max_corner = [5, 5, 4.0]
-        self.x_box_size = 1.25
+        self.min_corner = [-16, -16, -8.0]
+        self.max_corner = [16, 16, 8.0]
+        self.x_box_size = 1.0
         self.y_box_size = self.x_box_size / 2.0
-        self.z_box_size = 1.5
+        self.z_box_size = 1.0
         self.min_points = 3
         self.x_step_size = self.x_box_size / 2.0
         self.y_step_size = self.x_box_size / 2.0
-        self.z_step_size = 1.0
+        self.z_step_size = 0.5
         
         # size of imu data array (1, 13)
         self.latest_imu_data = np.zeros((13, 1))
@@ -143,27 +140,17 @@ class PCDSubPubNode(Node):
         """
         self.get_logger().info('Received point cloud, Infering...')
 
-        try:
-            # The local cloud is in "map" frame
-            # We need to transform it to "base_link" frame
-            trans = self.buffer.lookup_transform(
-                self.to_frame_rel,
-                self.from_frame_rel,
-                rclpy.time.Time())
+        # Now create a open3d point cloud
+        numpy_array_points = read_points_numpy(
+            msg, field_names=('x', 'y', 'z'))
 
-            # Now create a open3d point cloud
-            numpy_array_points = read_points_numpy(
-                msg, field_names=('x', 'y', 'z'))
+        pcd = o3d.geometry.PointCloud()
+        pcd.points = o3d.utility.Vector3dVector(numpy_array_points)
+        
+        trans = TransformStamped()
 
-            pcd = o3d.geometry.PointCloud()
-            pcd.points = o3d.utility.Vector3dVector(numpy_array_points)
+        self.infer(pcd, trans, msg.header)
 
-            self.infer(pcd, trans, msg.header)
-
-        except TransformException as ex:
-            self.get_logger().info(
-                f'Could not transform {self.to_frame_rel} to {self.from_frame_rel}: {ex}')
-            return
 
     def batch(self, iterable, n=1):
         """creates batches of size n from an iterable, typically a list
@@ -236,14 +223,6 @@ class PCDSubPubNode(Node):
 
         # calculate the time taken to transform the cloud
         start = time.time()
-        # Transfrom cloud to base_link frame
-        T = np.eye(4)
-        T[:3, :3] = pcd.get_rotation_matrix_from_quaternion((trans.transform.rotation.w, trans.transform.rotation.x,
-                                                             trans.transform.rotation.y, trans.transform.rotation.z))
-        T[0, 3] = trans.transform.translation.x
-        T[1, 3] = trans.transform.translation.y
-        T[2, 3] = trans.transform.translation.z
-        pcd_transformed = pcd.transform(T)
 
         pcd = pcd.crop(o3d.geometry.AxisAlignedBoundingBox(
             self.min_corner, self.max_corner))
